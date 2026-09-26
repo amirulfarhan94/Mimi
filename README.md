@@ -12,15 +12,16 @@ Every time the app opens, the dashboard greets her with:
 ## Features
 
 - **💌 Mimi Love Letter** — a daily note from Hubby on the dashboard. Tap the card to read today's one letter — it changes by itself every day — with special letters on **2 April** (Mimi's birthday 🎂), **10 October** (Hubby's birthday 🎂) and **30 November** (anniversary 💍).
-- **🔔 Reminders** — push notifications at 8:00 am for today's to-dos, kutu payments and your kutu turn, plus timed to-dos at their time (needs the small free server in [`push-worker/`](push-worker/README.md)).
+- **🔔 Reminders** — push notifications at 8:00 am for today's to-dos, kutu payments and your kutu turn, plus timed to-dos at their time and a daily weigh-in reminder (needs the small free server in [`push-worker/`](push-worker/README.md)).
 - **📔 Diary** — daily entries with a mood, search, and a writing streak.
 - **✅ To-do** — quick add, Today / Upcoming / All views, custom lists with emoji (🏠 Home, 🛒 Shopping, 💼 Work, 💕 Personal…), due date & time, ★ important, and **repeating tasks** (daily, weekly, monthly or every X days — ticking one creates the next).
+- **⚖️ Weight** — one weigh-in a day (kg, 1 decimal, optional note), a trend chart (7D / 30D / 3M / All) with a 7-day average, week / month / since-start changes, lowest & highest, editable history. Extras: a **goal** with a progress bar and optional target date, **BMI** (Malaysian cut-offs) once your height is set, a daily **weigh-in reminder** (only on days not yet logged; no numbers are sent) and **gentle mode** (on by default: soft colours and kind words, no red for small ups).
 - **💸 Expenses** — expenses & income by category, month navigation, category breakdown and monthly balance.
 - **🤝 Duit kutu** — manage many groups at once: **weekly**, **every 10 days**, **monthly**, or any custom interval.
   - Set the turn order (or 🎲 shuffle), tick **Me** on your slot(s) — more than one is fine.
   - Automatic round schedule with dates & recipients, per-member payment ticks, overdue rounds flagged ⚠️.
   - Ticking your own payment adds a Kutu expense; receiving your pot adds Kutu income.
-- **🏠 Dashboard** — today's to-dos (tick them right there), spent today / this month, balance, 7-day chart, upcoming kutu, your next payout, today's diary.
+- **🏠 Dashboard** — today's to-dos (tick them right there), today's weight with a sparkline, spent today / this month, balance, 7-day chart, upcoming kutu, your next payout, today's diary.
 
 ## PWA
 
@@ -75,9 +76,11 @@ js/app.js               hash router, navigation, FAB, SW updates
 js/store.js             localStorage store + backup
 js/kutu.js              kutu logic: round schedule, status, payments
 js/todo.js              to-do logic: sorting, repeating tasks, lists
+js/weight.js            weight logic: stats, 7-day average, goal, BMI
+js/reminders.js         push reminders: builds the list, syncs with push-worker/
 js/loveLetter.js        love letter logic: date → letter, special dates
 js/data/                bundled love letters (daily + special dates)
 scripts/                import-love-letters.py (workbook → js/data)
-js/views/*.js           Dashboard, Diary, To-do, Expenses, Kutu, Settings, Love Letter card & popup
+js/views/*.js           Dashboard, Diary, To-do, Weight, Expenses, Kutu, Settings, Love Letter card & popup
 icons/                  app icons generated from the Mimi logo (any + maskable + Apple)
 ```

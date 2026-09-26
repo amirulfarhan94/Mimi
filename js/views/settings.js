@@ -15,7 +15,7 @@ function remindersCard() {
   else body = `<button class="btn primary" data-push-on>🔔 Turn on reminders</button>`;
   return `<section class="card">
         <h3 class="card-title">🔔 Reminders</h3>
-        <p class="muted small">At 8:00 am: today’s to-dos, kutu payments and your kutu turn. To-dos with a time are also reminded at that time.</p>
+        <p class="muted small">At 8:00 am: today’s to-dos, kutu payments and your kutu turn. To-dos with a time are also reminded at that time, and the weigh-in reminder at the time you pick on the Weight page.</p>
         ${body}
         <p class="hint">Only reminder titles and times are sent to the reminder server. Diary and money stay on this phone.</p>
       </section>`;
@@ -42,7 +42,7 @@ export default {
 
       <section class="card">
         <h3 class="card-title">Backup</h3>
-        <p class="muted small">${s.notes.length} diary entries · ${s.todos.length} to-dos · ${s.txns.length} money records · ${s.kutu.length} kutu groups</p>
+        <p class="muted small">${s.notes.length} diary entries · ${s.todos.length} to-dos · ${s.txns.length} money records · ${s.kutu.length} kutu groups · ${(s.weights || []).length} weigh-ins</p>
         <div class="row gap wrap">
           <button class="btn" data-export>${icon('download')} Export JSON</button>
           <label class="btn">${icon('upload')} Import JSON<input type="file" accept="application/json,.json" hidden data-import></label>
@@ -98,7 +98,7 @@ export default {
       }
     });
     root.querySelector('[data-reset]').addEventListener('click', async () => {
-      if (await confirmSheet('All diary entries, to-dos, money records and kutu groups will be permanently deleted. Make sure you have exported a backup.', { ok: 'Delete everything' })) {
+      if (await confirmSheet('All diary entries, to-dos, money records, kutu groups and weigh-ins will be permanently deleted. Make sure you have exported a backup.', { ok: 'Delete everything' })) {
         resetAll();
         toast('All data deleted');
       }

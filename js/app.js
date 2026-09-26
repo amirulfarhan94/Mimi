@@ -10,6 +10,7 @@ import expenses from './views/expenses.js';
 import todo from './views/todo.js';
 import kutu from './views/kutu.js';
 import settings from './views/settings.js';
+import weight from './views/weight.js';
 
 const routes = [
   { re: /^\/?$/, view: dashboard, tab: 'home' },
@@ -18,6 +19,7 @@ const routes = [
   { re: /^\/expenses$/, view: expenses, tab: 'expenses' },
   { re: /^\/kutu$/, view: kutu, tab: 'kutu' },
   { re: /^\/kutu\/([\w-]+)$/, view: kutu, tab: 'kutu', params: (m) => ({ id: m[1] }) },
+  { re: /^\/weight$/, view: weight, tab: 'home' },
   { re: /^\/settings$/, view: settings, tab: null },
 ];
 

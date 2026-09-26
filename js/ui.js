@@ -39,7 +39,14 @@ export function confirmSheet(message, { ok = 'Delete', danger = true } = {}) {
         root.querySelector('[data-ok]').addEventListener('click', () => {
           answered = true; resolve(true); close();
         });
-        root.addEventListener('close', () => { if (!answered) resolve(false); }, { once: true });
+        // Closing the previous sheet (e.g. an edit form) queues a 'close' event that arrives after this
+        // sheet has opened — ignore it while the dialog is still open.
+        const onClose = () => {
+          if (root.open) return;
+          root.removeEventListener('close', onClose);
+          if (!answered) resolve(false);
+        };
+        root.addEventListener('close', onClose);
       },
     });
   });

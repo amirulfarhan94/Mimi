@@ -4,6 +4,7 @@ import { getState } from './store.js';
 import { today, addDays, parseISO, rm } from './util.js';
 import { rounds, pot } from './kutu.js';
 import { sortTodos, fmtTime } from './todo.js';
+import { weightSettings } from './weight.js';
 
 const DAYS_AHEAD = 45;   // how far ahead reminders are scheduled (refreshed whenever the app opens)
 const DAILY_HOUR = 8;    // 8:00 am: today's to-dos, kutu payments and kutu turns
@@ -17,8 +18,16 @@ export function buildReminders(state, now = new Date()) {
   const start = today();
   const open = state.todos.filter((t) => !t.done && t.due);
   const out = [];
+  // Daily weigh-in (once she has started logging); skipped on days already logged. No numbers are sent.
+  const ws = weightSettings(state);
+  const weights = state.weights || [];
+  const [wh, wm] = (ws.reminder.time || '07:00').split(':').map(Number);
   for (let i = 0; i < DAYS_AHEAD; i++) {
     const day = addDays(start, i);
+    const tw = at(day, wh, wm);
+    if (ws.reminder.on && weights.length && tw > nowMs && !weights.some((w) => w.date === day)) {
+      out.push({ id: `weigh:${day}`, at: tw, title: '⚖️ Time to weigh in', body: 'A quick check-in for today 💕', url: './#/weight' });
+    }
     const t8 = at(day, DAILY_HOUR);
     if (t8 <= nowMs) continue;
     // To-dos due that day (today's summary also includes anything overdue)
