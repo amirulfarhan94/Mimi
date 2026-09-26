@@ -8,6 +8,7 @@ import { openGroupForm } from './kutu.js';
 import { openTodoForm, todoRow, bindTodoRows } from './todo.js';
 import { sortTodos, isDueToday } from '../todo.js';
 import { upcomingEvents, myUpcomingPayouts, pot } from '../kutu.js';
+import { letterCard, bindLetterCard } from './loveLetter.js';
 
 /** Vertical bars of the last 7 days of spending (one series; values in tooltip & today's label). */
 function weekChart(txns) {
@@ -48,10 +49,12 @@ export default {
       <section class="love-card">
         <span class="love-hearts" aria-hidden="true">♥ ♡ ♥</span>
         <h1 class="script">Hi Sayang ❤️</h1>
-        <p class="love-ask">What can I help you with today?</p>
+        <p class="love-ask">What would you like to do today?</p>
         <p class="love-sign">— Always here for you.</p>
         <p class="love-date">${fmtDateLong(now)}</p>
       </section>
+
+      ${letterCard()}
 
       <div class="quick" aria-label="Quick add">
         <button class="quick-btn" data-q="txn"><span>💸</span>Expense</button>
@@ -121,5 +124,6 @@ export default {
     bindTxnRows(root);
     bindNoteCards(root);
     bindTodoRows(root);
+    bindLetterCard(root);
   },
 };
