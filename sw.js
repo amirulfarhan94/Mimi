@@ -1,6 +1,6 @@
-// Service worker: cache app shell untuk kegunaan luar talian.
-// Naikkan VERSION setiap kali fail app berubah supaya pengguna dapat versi baru.
-const VERSION = 'mimi-v1';
+// Service worker: caches the app shell for offline use.
+// Bump VERSION whenever app files change so users receive the new version.
+const VERSION = 'mimi-v2';
 const ASSETS = [
   './',
   './index.html',
@@ -17,9 +17,12 @@ const ASSETS = [
   './js/views/expenses.js',
   './js/views/kutu.js',
   './js/views/settings.js',
-  './icons/icon.svg',
+  './fonts/quicksand-latin.woff2',
+  './fonts/dancing-script-latin.woff2',
+  './icons/favicon-48.png',
   './icons/icon-192.png',
   './icons/icon-512.png',
+  './icons/icon-maskable-192.png',
   './icons/icon-maskable-512.png',
   './icons/apple-touch-icon.png',
 ];
@@ -40,10 +43,13 @@ self.addEventListener('message', (e) => {
   if (e.data === 'SKIP_WAITING') self.skipWaiting();
 });
 
-// Cache dahulu, rangkaian sebagai sandaran; navigasi jatuh balik ke index.html.
 self.addEventListener('fetch', (e) => {
   const req = e.request;
-  if (req.method !== 'GET' || new URL(req.url).origin !== location.origin) return;
+  if (req.method !== 'GET') return;
+  const url = new URL(req.url);
+  if (url.origin !== location.origin) return;
+
+  // App files: cache-first, network fallback; navigations fall back to index.html.
   e.respondWith(
     caches.match(req, { ignoreSearch: true }).then((hit) => {
       if (hit) return hit;

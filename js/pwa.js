@@ -1,4 +1,4 @@
-// Pendaftaran service worker & sokongan "Pasang app".
+// Service worker registration & "Install app" support.
 let deferred = null;
 const listeners = new Set();
 
@@ -38,7 +38,7 @@ export function registerSW(onUpdate) {
         });
       });
     } catch (e) {
-      console.warn('Service worker gagal didaftar', e);
+      console.warn('Service worker registration failed', e);
     }
   });
 }

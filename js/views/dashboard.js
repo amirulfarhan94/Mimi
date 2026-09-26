@@ -1,4 +1,4 @@
-// Dashboard: ringkasan hari ini — belanja, diari, kutu.
+// Dashboard: a loving hello plus today's summary — spending, diary, kutu.
 import { getState } from '../store.js';
 import { esc, rm, rmStat, today, addDays, monthKey, fmtDateLong, fmtDate, fmtShortDay, relDays } from '../util.js';
 import { icon } from '../ui.js';
@@ -7,15 +7,7 @@ import { openNoteForm, noteCard, bindNoteCards, streak } from './diary.js';
 import { openGroupForm } from './kutu.js';
 import { upcomingEvents, myUpcomingPayouts, pot } from '../kutu.js';
 
-function greeting() {
-  const h = new Date().getHours();
-  if (h < 12) return 'Selamat pagi';
-  if (h < 15) return 'Selamat tengah hari';
-  if (h < 19) return 'Selamat petang';
-  return 'Selamat malam';
-}
-
-/** Carta bar menegak belanja 7 hari (satu siri; nilai dalam tooltip & label hari ini). */
+/** Vertical bars of the last 7 days of spending (one series; values in tooltip & today's label). */
 function weekChart(txns) {
   const now = today();
   const days = Array.from({ length: 7 }, (_, i) => addDays(now, i - 6));
@@ -23,8 +15,8 @@ function weekChart(txns) {
   const max = Math.max(...vals, 1);
   const total = vals.reduce((a, b) => a + b, 0);
   return `
-    <div class="row between"><h3 class="card-title">Belanja 7 hari</h3><span class="muted small">Jumlah ${rm(total)}</span></div>
-    <div class="vbars" role="img" aria-label="Belanja 7 hari lepas">
+    <div class="row between"><h3 class="card-title">Last 7 days</h3><span class="muted small">Total ${rm(total)}</span></div>
+    <div class="vbars" role="img" aria-label="Spending over the last 7 days">
       ${days.map((d, i) => `
         <div class="vbar ${d === now ? 'today' : ''}" tabindex="0" data-tip="${fmtDate(d)}: ${rm(vals[i])}">
           <span class="vbar-val">${d === now && vals[i] ? rm(vals[i]).replace('RM', '').trim() : ''}</span>
@@ -32,7 +24,7 @@ function weekChart(txns) {
           <span class="vbar-lbl">${fmtShortDay(d)}</span>
         </div>`).join('')}
     </div>
-    <table class="sr-only"><caption>Belanja 7 hari</caption>
+    <table class="sr-only"><caption>Spending over the last 7 days</caption>
       ${days.map((d, i) => `<tr><th>${fmtDate(d)}</th><td>${rm(vals[i])}</td></tr>`).join('')}</table>`;
 }
 
@@ -48,32 +40,34 @@ export default {
     const events = upcomingEvents(s.kutu, now, 5);
     const payout = myUpcomingPayouts(s.kutu, now)[0];
     const recent = [...s.txns].sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || '').localeCompare(a.createdAt || '')).slice(0, 4);
-    const name = s.settings.name ? `, ${esc(s.settings.name)}` : '';
 
     return `
-      <header class="hello">
-        <p class="muted">${fmtDateLong(now)}</p>
-        <h1>${greeting()}${name} 👋</h1>
-      </header>
+      <section class="love-card">
+        <span class="love-hearts" aria-hidden="true">♥ ♡ ♥</span>
+        <h1 class="script">Hi Sayang ❤️</h1>
+        <p class="love-ask">What can I help you with today?</p>
+        <p class="love-sign">— Always here for you.</p>
+        <p class="love-date">${fmtDateLong(now)}</p>
+      </section>
 
       <div class="quick">
-        <button class="quick-btn" data-q="txn"><span>💸</span>Rekod belanja</button>
-        <button class="quick-btn" data-q="note"><span>📝</span>Tulis diari</button>
-        <button class="quick-btn" data-q="kutu"><span>🤝</span>Kutu baru</button>
+        <button class="quick-btn" data-q="txn"><span>💸</span>Add expense</button>
+        <button class="quick-btn" data-q="note"><span>📝</span>Write diary</button>
+        <button class="quick-btn" data-q="kutu"><span>🤝</span>New kutu</button>
       </div>
 
       <section class="stats three">
-        <div class="stat"><span class="stat-label">Belanja hari ini</span><span class="stat-val">${rmStat(todayOut)}</span></div>
-        <div class="stat"><span class="stat-label">Belanja bulan ini</span><span class="stat-val out">${rmStat(mTot.out)}</span></div>
-        <div class="stat"><span class="stat-label">Baki bulan ini</span><span class="stat-val ${mTot.balance < 0 ? 'out' : 'in'}">${rmStat(mTot.balance)}</span></div>
+        <div class="stat"><span class="stat-label">Spent today</span><span class="stat-val">${rmStat(todayOut)}</span></div>
+        <div class="stat"><span class="stat-label">Spent this month</span><span class="stat-val out">${rmStat(mTot.out)}</span></div>
+        <div class="stat"><span class="stat-label">Balance this month</span><span class="stat-val ${mTot.balance < 0 ? 'out' : 'in'}">${rmStat(mTot.balance)}</span></div>
       </section>
 
       <section class="card">${weekChart(s.txns)}</section>
 
       <section class="card">
-        <div class="row between"><h3 class="card-title">${icon('users')} Duit kutu</h3><a class="link" href="#/kutu">Lihat semua</a></div>
+        <div class="row between"><h3 class="card-title">${icon('users')} Duit kutu</h3><a class="link" href="#/kutu">See all</a></div>
         ${payout ? `<a class="payout" href="#/kutu/${payout.group.id}">
-            ${icon('gift')}<span class="grow"><b>Giliran anda dapat ${rm(pot(payout.group))}</b><br>
+            ${icon('gift')}<span class="grow"><b>Your turn to receive ${rm(pot(payout.group))}</b><br>
             <span class="small">${esc(payout.group.name)} · ${fmtDate(payout.round.date)} (${relDays(payout.round.date)})</span></span></a>` : ''}
         ${events.length ? `<div class="list">${events.map((e) => {
           const g = e.group, r = e.round;
@@ -82,30 +76,30 @@ export default {
             <span class="emoji-badge ${e.overdue ? 'warn' : ''}">${e.overdue ? icon('alert') : icon('calendar')}</span>
             <span class="grow">
               <span class="li-title">${esc(g.name)}</span>
-              <span class="li-sub">${e.overdue ? 'Tertunggak · ' : ''}Pusingan ${r.index + 1} → ${esc(r.recipient.name)} · ${fmtDate(r.date)}</span>
+              <span class="li-sub">${e.overdue ? 'Overdue · ' : ''}Round ${r.index + 1} → ${esc(r.recipient.name)} · ${fmtDate(r.date)}</span>
             </span>
             <span class="pill ${e.overdue ? 'warn' : e.days <= 2 ? 'soon' : ''}">${relDays(r.date)}</span>
             ${!e.overdue && myPaid && g.members.some((m) => m.isMe) ? `<span class="pill ok">${icon('check')}</span>` : ''}
           </a>`;
-        }).join('')}</div>` : `<p class="muted small">Tiada kutu akan datang. <a class="link" href="#/kutu">Cipta kumpulan</a></p>`}
+        }).join('')}</div>` : `<p class="muted small">No upcoming kutu. <a class="link" href="#/kutu">Create a group</a></p>`}
       </section>
 
       <section class="card">
-        <div class="row between"><h3 class="card-title">${icon('book')} Diari hari ini</h3><span class="muted small">${streak()} hari berturut 🔥</span></div>
+        <div class="row between"><h3 class="card-title">${icon('book')} Today's diary</h3><span class="muted small">${streak()}-day streak 🔥</span></div>
         ${todayNote ? `<div class="notes">${noteCard(todayNote)}</div>` : `
           <button class="prompt" data-q="note">
-            <span>✍️</span><span class="grow"><b>Belum tulis diari hari ini</b><br><span class="small muted">Luangkan 2 minit untuk catat hari anda.</span></span>${icon('right')}
+            <span>✍️</span><span class="grow"><b>No diary entry yet today</b><br><span class="small muted">Take 2 minutes to write about your day.</span></span>${icon('right')}
           </button>`}
       </section>
 
       <section class="card">
-        <div class="row between"><h3 class="card-title">${icon('wallet')} Kategori teratas bulan ini</h3><a class="link" href="#/belanja">Butiran</a></div>
+        <div class="row between"><h3 class="card-title">${icon('wallet')} Top categories this month</h3><a class="link" href="#/expenses">Details</a></div>
         ${categoryBars(byCategory(mTxns, 'out').slice(0, 4))}
       </section>
 
       <section class="card">
-        <div class="row between"><h3 class="card-title">Rekod terkini</h3><a class="link" href="#/belanja">Semua</a></div>
-        ${recent.length ? `<div class="list">${recent.map(txnRow).join('')}</div>` : '<p class="muted small">Belum ada rekod belanja.</p>'}
+        <div class="row between"><h3 class="card-title">Recent records</h3><a class="link" href="#/expenses">All</a></div>
+        ${recent.length ? `<div class="list">${recent.map(txnRow).join('')}</div>` : '<p class="muted small">No expenses recorded yet.</p>'}
       </section>`;
   },
   mount(root) {

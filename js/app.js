@@ -1,4 +1,4 @@
-// Shell aplikasi: penghala hash, navigasi bawah, FAB & kemas kini PWA.
+// App shell: hash router, bottom navigation, FAB & PWA updates.
 import { subscribe } from './store.js';
 import { $, $$ } from './util.js';
 import { icon } from './ui.js';
@@ -11,11 +11,11 @@ import settings from './views/settings.js';
 
 const routes = [
   { re: /^\/?$/, view: dashboard, tab: 'home' },
-  { re: /^\/diari$/, view: diary, tab: 'diari' },
-  { re: /^\/belanja$/, view: expenses, tab: 'belanja' },
+  { re: /^\/diary$/, view: diary, tab: 'diary' },
+  { re: /^\/expenses$/, view: expenses, tab: 'expenses' },
   { re: /^\/kutu$/, view: kutu, tab: 'kutu' },
   { re: /^\/kutu\/([\w-]+)$/, view: kutu, tab: 'kutu', params: (m) => ({ id: m[1] }) },
-  { re: /^\/tetapan$/, view: settings, tab: null },
+  { re: /^\/settings$/, view: settings, tab: null },
 ];
 
 let current = null;
@@ -37,7 +37,7 @@ function render({ keepScroll = false } = {}) {
   route.view.mount?.(main, () => render({ keepScroll: true }), route.params);
 
   $('#pageTitle').textContent = route.view === dashboard ? 'Mimi' : route.view.title;
-  document.title = route.view === dashboard ? 'Mimi — Diari, Belanja & Kutu' : `${route.view.title} · Mimi`;
+  document.title = route.view === dashboard ? 'Mimi' : `${route.view.title} · Mimi`;
   $$('.tabbar a').forEach((a) => a.classList.toggle('active', a.dataset.tab === route.tab));
   $$('.tabbar a').forEach((a) => a.toggleAttribute('aria-current', a.dataset.tab === route.tab));
 
@@ -51,14 +51,14 @@ function render({ keepScroll = false } = {}) {
   current = route.path;
 }
 
-// Isi ikon navigasi
+// Fill in navigation icons
 $$('[data-icon]').forEach((el) => { el.insertAdjacentHTML('afterbegin', icon(el.dataset.icon)); });
 
 window.addEventListener('hashchange', () => render());
 subscribe(() => render({ keepScroll: true }));
 onInstallChange(() => { if (resolve().view === settings) render({ keepScroll: true }); });
 
-// Kemas kini tarikh apabila app dibuka semula pada hari lain
+// Refresh dates when the app is reopened on another day
 let lastDay = new Date().toDateString();
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible' && new Date().toDateString() !== lastDay) {
@@ -67,7 +67,7 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
-// Muat semula hanya selepas pengguna setuju kemas kini (bukan semasa pemasangan pertama).
+// Reload only after the user accepts an update (not on first install).
 let updateRequested = false;
 registerSW((reg) => {
   const bar = $('#updateBar');

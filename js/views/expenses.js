@@ -1,16 +1,16 @@
-// Rekod perbelanjaan & pendapatan.
+// Expense & income records.
 import { getState, upsert, remove, find } from '../store.js';
 import { esc, rm, rmStat, today, monthKey, fmtMonth, shiftMonth, fmtDateLong, relDays } from '../util.js';
 import { openSheet, confirmSheet, toast, formData, icon } from '../ui.js';
 
 export const CATEGORIES = {
   out: [
-    ['Makanan', '🍛'], ['Barang Dapur', '🛒'], ['Pengangkutan', '⛽'], ['Bil & Utiliti', '💡'],
-    ['Belanja', '🛍️'], ['Kesihatan', '💊'], ['Hiburan', '🎬'], ['Pendidikan', '📚'],
-    ['Keluarga', '👨‍👩‍👧'], ['Sedekah', '🤲'], ['Kutu', '🤝'], ['Lain-lain', '📦'],
+    ['Food', '🍛'], ['Groceries', '🛒'], ['Transport', '⛽'], ['Bills & Utilities', '💡'],
+    ['Shopping', '🛍️'], ['Beauty & Self-care', '💅'], ['Health', '💊'], ['Entertainment', '🎬'],
+    ['Education', '📚'], ['Family', '👨‍👩‍👧'], ['Charity', '🤲'], ['Kutu', '🤝'], ['Others', '📦'],
   ],
   in: [
-    ['Gaji', '💼'], ['Sampingan', '💸'], ['Kutu', '🤝'], ['Hadiah', '🎁'], ['Lain-lain', '📦'],
+    ['Salary', '💼'], ['Side income', '💸'], ['Kutu', '🤝'], ['Gift', '🎁'], ['Others', '📦'],
   ],
 };
 
@@ -34,9 +34,9 @@ export function byCategory(list, type = 'out') {
   return [...map].sort((a, b) => b[1] - a[1]);
 }
 
-/** Bar mendatar untuk pecahan kategori (satu siri, satu warna). */
+/** Horizontal bars for the category breakdown (one series, one colour). */
 export function categoryBars(rows, type = 'out') {
-  if (!rows.length) return '<p class="muted small">Tiada rekod lagi.</p>';
+  if (!rows.length) return '<p class="muted small">No records yet.</p>';
   const max = rows[0][1];
   const sum = rows.reduce((a, [, v]) => a + v, 0);
   return `<ul class="hbars">${rows.map(([cat, v]) => `
@@ -64,35 +64,35 @@ export function bindTxnRows(root) {
 }
 
 export function openTxnForm(existing, defaults = {}) {
-  const t = existing || { type: 'out', amount: '', category: 'Makanan', date: today(), note: '', ...defaults };
+  const t = existing || { type: 'out', amount: '', category: 'Food', date: today(), note: '', ...defaults };
   const catOptions = (type) => CATEGORIES[type]
     .map(([c, e]) => `<option value="${esc(c)}" ${c === t.category ? 'selected' : ''}>${e} ${esc(c)}</option>`).join('');
 
   openSheet({
-    title: existing ? 'Edit rekod' : 'Rekod baru',
+    title: existing ? 'Edit record' : 'New record',
     body: `
       <form class="form" id="txnForm">
         <div class="segmented" role="radiogroup">
-          <label><input type="radio" name="type" value="out" ${t.type === 'out' ? 'checked' : ''}><span>${icon('arrowUp')} Belanja</span></label>
-          <label><input type="radio" name="type" value="in" ${t.type === 'in' ? 'checked' : ''}><span>${icon('arrowDown')} Pendapatan</span></label>
+          <label><input type="radio" name="type" value="out" ${t.type === 'out' ? 'checked' : ''}><span>${icon('arrowUp')} Expense</span></label>
+          <label><input type="radio" name="type" value="in" ${t.type === 'in' ? 'checked' : ''}><span>${icon('arrowDown')} Income</span></label>
         </div>
         <label class="field amount-field">
-          <span>Jumlah (RM)</span>
+          <span>Amount (RM)</span>
           <input name="amount" type="number" inputmode="decimal" step="0.01" min="0.01" required value="${esc(t.amount)}" placeholder="0.00">
         </label>
-        <label class="field"><span>Kategori</span>
+        <label class="field"><span>Category</span>
           <select name="category">${catOptions(t.type)}</select>
         </label>
-        <label class="field"><span>Tarikh</span>
+        <label class="field"><span>Date</span>
           <input name="date" type="date" required value="${esc(t.date)}">
         </label>
-        <label class="field"><span>Catatan</span>
-          <input name="note" type="text" maxlength="120" value="${esc(t.note)}" placeholder="cth: Nasi lemak + teh o ais">
+        <label class="field"><span>Note</span>
+          <input name="note" type="text" maxlength="120" value="${esc(t.note)}" placeholder="e.g. Nasi lemak + iced tea">
         </label>
-        ${t.link ? '<p class="hint">Rekod ini dicipta automatik daripada kumpulan kutu.</p>' : ''}
+        ${t.link ? '<p class="hint">This record was created automatically from a kutu group.</p>' : ''}
         <div class="row gap mt">
-          ${existing ? `<button type="button" class="btn ghost danger-text" data-del>${icon('trash')} Padam</button>` : ''}
-          <button class="btn primary grow" type="submit">${icon('check')} Simpan</button>
+          ${existing ? `<button type="button" class="btn ghost danger-text" data-del>${icon('trash')} Delete</button>` : ''}
+          <button class="btn primary grow" type="submit">${icon('check')} Save</button>
         </div>
       </form>`,
     onMount(root, close) {
@@ -108,18 +108,18 @@ export function openTxnForm(existing, defaults = {}) {
         upsert('txns', { ...(existing || {}), ...d, amount: Math.round(parseFloat(d.amount) * 100) / 100 });
         month = monthKey(d.date);
         close();
-        toast(existing ? 'Rekod dikemas kini' : 'Rekod disimpan');
+        toast(existing ? 'Record updated' : 'Record saved 💕');
       });
       root.querySelector('[data-del]')?.addEventListener('click', async () => {
         close();
-        if (await confirmSheet('Padam rekod ini?')) { remove('txns', existing.id); toast('Rekod dipadam'); }
+        if (await confirmSheet('Delete this record?')) { remove('txns', existing.id); toast('Record deleted'); }
       });
     },
   });
 }
 
 export default {
-  title: 'Belanja',
+  title: 'Expenses',
   fab: () => openTxnForm(),
   render() {
     const all = txnsInMonth(month);
@@ -133,24 +133,24 @@ export default {
 
     return `
       <div class="month-nav">
-        <button class="icon-btn" data-month="-1" aria-label="Bulan sebelum">${icon('left')}</button>
+        <button class="icon-btn" data-month="-1" aria-label="Previous month">${icon('left')}</button>
         <strong>${fmtMonth(month)}</strong>
-        <button class="icon-btn" data-month="1" aria-label="Bulan seterusnya">${icon('right')}</button>
+        <button class="icon-btn" data-month="1" aria-label="Next month">${icon('right')}</button>
       </div>
 
       <section class="stats three">
-        <div class="stat"><span class="stat-label">Belanja</span><span class="stat-val out">${rmStat(tot.out)}</span></div>
-        <div class="stat"><span class="stat-label">Pendapatan</span><span class="stat-val in">${rmStat(tot.in)}</span></div>
-        <div class="stat"><span class="stat-label">Baki</span><span class="stat-val ${tot.balance < 0 ? 'out' : ''}">${rmStat(tot.balance)}</span></div>
+        <div class="stat"><span class="stat-label">Spent</span><span class="stat-val out">${rmStat(tot.out)}</span></div>
+        <div class="stat"><span class="stat-label">Income</span><span class="stat-val in">${rmStat(tot.in)}</span></div>
+        <div class="stat"><span class="stat-label">Balance</span><span class="stat-val ${tot.balance < 0 ? 'out' : ''}">${rmStat(tot.balance)}</span></div>
       </section>
 
       <section class="card">
-        <h3 class="card-title">Belanja ikut kategori</h3>
+        <h3 class="card-title">Spending by category</h3>
         ${categoryBars(byCategory(all, 'out'))}
       </section>
 
       <div class="chips">
-        ${[['all', 'Semua'], ['out', 'Belanja'], ['in', 'Pendapatan']].map(([k, l]) =>
+        ${[['all', 'All'], ['out', 'Expenses'], ['in', 'Income']].map(([k, l]) =>
           `<button class="chip ${filter === k ? 'on' : ''}" data-filter="${k}">${l}</button>`).join('')}
       </div>
 
@@ -162,8 +162,8 @@ export default {
         </section>`;
       }).join('') : `<div class="empty">
           <div class="empty-emoji">🧾</div>
-          <p>Tiada rekod untuk ${fmtMonth(month)}.</p>
-          <button class="btn primary" data-add>${icon('plus')} Tambah rekod</button>
+          <p>No records for ${fmtMonth(month)}.</p>
+          <button class="btn primary" data-add>${icon('plus')} Add record</button>
         </div>`}
     `;
   },

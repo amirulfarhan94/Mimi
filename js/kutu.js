@@ -1,33 +1,33 @@
-// Logik kumpulan duit kutu: jadual pusingan, giliran, status bayaran.
+// Duit kutu group logic: round schedule, turn order, payment status.
 import { addDays, addMonths, today, daysBetween } from './util.js';
 import { update, getState } from './store.js';
 import { uid } from './util.js';
 
 /*
-  Kumpulan kutu:
+  Kutu group:
   {
-    id, name, amount,            // amount = caruman setiap ahli setiap pusingan
+    id, name, amount,            // amount = each member's contribution per round
     frequency: 'weekly' | '10days' | 'monthly' | 'custom',
-    intervalDays,                // hanya untuk 'custom'
-    startDate,                   // tarikh pusingan pertama (YYYY-MM-DD)
-    members: [{ id, name, isMe }],  // susunan = susunan giliran
+    intervalDays,                // only for 'custom'
+    startDate,                   // date of the first round (YYYY-MM-DD)
+    members: [{ id, name, isMe }],  // order = turn order
     paid: { [round]: { [memberId]: true } },
-    handedOut: { [round]: true },   // duit pusingan sudah diserahkan
+    handedOut: { [round]: true },   // the round's pot has been handed over
     note, archived
   }
 */
 
 export const FREQUENCIES = {
-  weekly: { label: 'Mingguan (7 hari)', short: '1 minggu' },
-  '10days': { label: 'Setiap 10 hari', short: '10 hari' },
-  monthly: { label: 'Bulanan', short: '1 bulan' },
-  custom: { label: 'Tempoh lain (hari)', short: 'custom' },
+  weekly: { label: 'Weekly (7 days)', short: '1 week' },
+  '10days': { label: 'Every 10 days', short: '10 days' },
+  monthly: { label: 'Monthly', short: '1 month' },
+  custom: { label: 'Custom (days)', short: 'custom' },
 };
 
 export const freqShort = (g) =>
-  g.frequency === 'custom' ? `${g.intervalDays} hari` : FREQUENCIES[g.frequency].short;
+  g.frequency === 'custom' ? `${g.intervalDays} days` : FREQUENCIES[g.frequency].short;
 
-/** Tarikh untuk pusingan ke-i (0-indexed). */
+/** Date of round i (0-indexed). */
 export function roundDate(g, i) {
   switch (g.frequency) {
     case 'weekly': return addDays(g.startDate, 7 * i);
@@ -53,9 +53,9 @@ export function rounds(g) {
 }
 
 /**
- * Status semasa kumpulan.
- * current = pusingan terkini yang tarikhnya <= hari ini (atau null jika belum mula).
- * next    = pusingan pertama yang tarikhnya >= hari ini.
+ * Current group status.
+ * current = latest round dated <= today (or null if not started yet).
+ * next    = first round dated >= today.
  */
 export function status(g, now = today()) {
   const rs = rounds(g);
@@ -74,14 +74,14 @@ export function status(g, now = today()) {
 }
 
 export const STATE_LABEL = {
-  upcoming: 'Belum mula',
-  active: 'Aktif',
-  finished: 'Selesai',
-  archived: 'Diarkib',
-  empty: 'Tiada ahli',
+  upcoming: 'Not started',
+  active: 'Active',
+  finished: 'Completed',
+  archived: 'Archived',
+  empty: 'No members',
 };
 
-/** Acara akan datang merentas semua kumpulan (untuk dashboard). */
+/** Upcoming events across all groups (for the dashboard). */
 export function upcomingEvents(groups, now = today(), limit = 5) {
   const events = [];
   for (const g of groups) {
@@ -89,19 +89,19 @@ export function upcomingEvents(groups, now = today(), limit = 5) {
     const st = status(g, now);
     for (const r of st.rounds) {
       if (r.date < now) {
-        // Pusingan lepas yang saya belum bayar -> tunggakan
+        // Past rounds I haven't paid -> overdue
         const unpaidMine = g.members.filter((m) => m.isMe && !g.paid?.[r.index]?.[m.id]);
         if (unpaidMine.length) events.push({ group: g, round: r, overdue: true, days: daysBetween(now, r.date) });
         continue;
       }
       events.push({ group: g, round: r, overdue: false, days: daysBetween(now, r.date) });
-      break; // hanya pusingan seterusnya bagi setiap kumpulan
+      break; // only the next round of each group
     }
   }
   return events.sort((a, b) => a.round.date.localeCompare(b.round.date)).slice(0, limit);
 }
 
-/** Pusingan di mana saya penerima dan belum lepas. */
+/** Rounds where I'm the recipient and that haven't passed. */
 export function myUpcomingPayouts(groups, now = today()) {
   const out = [];
   for (const g of groups) {
@@ -113,11 +113,11 @@ export function myUpcomingPayouts(groups, now = today()) {
   return out.sort((a, b) => a.round.date.localeCompare(b.round.date));
 }
 
-// ---------- Mutasi ----------
+// ---------- Mutations ----------
 
 /**
- * Tanda/nyahtanda bayaran ahli untuk satu pusingan.
- * Jika ahli itu "Saya", rekod perbelanjaan kategori Kutu dicipta/dibuang secara automatik.
+ * Mark/unmark a member's payment for a round.
+ * If the member is "Me", a Kutu expense record is created/removed automatically.
  */
 export function togglePaid(groupId, round, memberId) {
   update((s) => {
@@ -137,7 +137,7 @@ export function togglePaid(groupId, round, memberId) {
         s.txns.push({
           id: uid(), type: 'out', amount: g.amount, category: 'Kutu',
           date: date > today() ? today() : date,
-          note: `Bayar ${g.name} — pusingan ${round + 1}`,
+          note: `Paid ${g.name} — round ${round + 1}`,
           link: { kutuId: g.id, round, memberId, kind: 'pay' },
           createdAt: new Date().toISOString(),
         });
@@ -148,7 +148,7 @@ export function togglePaid(groupId, round, memberId) {
   });
 }
 
-/** Tanda semua ahli sudah bayar untuk pusingan (tidak cipta rekod belanja untuk orang lain). */
+/** Mark every member as paid for a round (only my slots create expense records). */
 export function markAllPaid(groupId, round) {
   const g = getState().kutu.find((x) => x.id === groupId);
   if (!g) return;
@@ -156,8 +156,8 @@ export function markAllPaid(groupId, round) {
 }
 
 /**
- * Tanda duit pusingan sudah diserahkan kepada penerima.
- * Jika penerima ialah "Saya", rekod pendapatan kategori Kutu dicipta/dibuang.
+ * Mark the round's pot as handed to the recipient.
+ * If the recipient is "Me", a Kutu income record is created/removed.
  */
 export function toggleHandedOut(groupId, round) {
   update((s) => {
@@ -176,7 +176,7 @@ export function toggleHandedOut(groupId, round) {
         s.txns.push({
           id: uid(), type: 'in', amount: pot(g), category: 'Kutu',
           date: date > today() ? today() : date,
-          note: `Terima ${g.name} — pusingan ${round + 1}`,
+          note: `Received ${g.name} — round ${round + 1}`,
           link: { kutuId: g.id, round, memberId: recipient.id, kind: 'receive' },
           createdAt: new Date().toISOString(),
         });
@@ -187,7 +187,7 @@ export function toggleHandedOut(groupId, round) {
   });
 }
 
-/** Buang kumpulan beserta rekod transaksi automatik yang berkaitan. */
+/** Delete a group along with its auto-created transactions. */
 export function deleteGroup(groupId) {
   update((s) => {
     s.kutu = s.kutu.filter((g) => g.id !== groupId);

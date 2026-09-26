@@ -1,25 +1,76 @@
 {
-  "name": "Mimi — Diari, Belanja & Kutu",
+  "name": "Mimi",
   "short_name": "Mimi",
-  "description": "Diari harian, rekod perbelanjaan dan pengurusan kumpulan duit kutu.",
+  "description": "Daily diary, expense tracker and duit kutu groups — all in one sweet little app.",
   "id": "./",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#f4f6f5",
-  "theme_color": "#0f766e",
-  "lang": "ms",
-  "categories": ["finance", "lifestyle", "productivity"],
+  "background_color": "#fff6f8",
+  "theme_color": "#fde8ee",
+  "lang": "en",
+  "categories": [
+    "finance",
+    "lifestyle",
+    "productivity"
+  ],
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
-    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ],
   "shortcuts": [
-    { "name": "Rekod belanja", "url": "./#/belanja", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
-    { "name": "Tulis diari", "url": "./#/diari", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
-    { "name": "Duit kutu", "url": "./#/kutu", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+    {
+      "name": "Add expense",
+      "url": "./#/expenses",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Write diary",
+      "url": "./#/diary",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Duit kutu",
+      "url": "./#/kutu",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
   ]
 }

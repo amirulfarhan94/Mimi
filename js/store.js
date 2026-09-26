@@ -1,4 +1,4 @@
-// Simpanan data tempatan (localStorage). Semua data kekal dalam peranti pengguna.
+// Local data storage (localStorage). All data stays on the user's device.
 import { uid } from './util.js';
 
 const KEY = 'mimi:data:v1';
@@ -7,7 +7,7 @@ const empty = () => ({
   version: 1,
   notes: [],   // { id, date, mood, title, body, createdAt, updatedAt }
   txns: [],    // { id, type: 'out'|'in', amount, category, date, note, link?: { kutuId, round, kind } }
-  kutu: [],    // lihat js/kutu.js
+  kutu: [],    // see js/kutu.js
   settings: { name: '' },
 });
 
@@ -28,7 +28,7 @@ function persist() {
   try {
     localStorage.setItem(KEY, JSON.stringify(state));
   } catch (e) {
-    console.error('Gagal simpan data', e);
+    console.error('Failed to save data', e);
   }
   listeners.forEach((fn) => fn(state));
 }
@@ -36,13 +36,13 @@ function persist() {
 export const getState = () => state;
 export const subscribe = (fn) => (listeners.add(fn), () => listeners.delete(fn));
 
-/** Ubah state melalui fungsi mutasi, kemudian simpan. */
+/** Change state through a mutator function, then persist. */
 export function update(mutator) {
   mutator(state);
   persist();
 }
 
-// ---------- CRUD generik ----------
+// ---------- Generic CRUD ----------
 export function upsert(collection, item) {
   update((s) => {
     const list = s[collection];
@@ -67,7 +67,7 @@ export function find(collection, id) {
   return state[collection].find((x) => x.id === id);
 }
 
-// ---------- Sandaran ----------
+// ---------- Backup ----------
 export function exportJSON() {
   return JSON.stringify({ ...state, exportedAt: new Date().toISOString() }, null, 2);
 }
@@ -75,7 +75,7 @@ export function exportJSON() {
 export function importJSON(text) {
   const data = JSON.parse(text);
   if (!data || !Array.isArray(data.notes) || !Array.isArray(data.txns) || !Array.isArray(data.kutu)) {
-    throw new Error('Fail sandaran tidak sah');
+    throw new Error('Invalid backup file');
   }
   delete data.exportedAt;
   state = { ...empty(), ...data };

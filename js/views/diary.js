@@ -1,11 +1,11 @@
-// Nota harian / diari.
+// Daily notes / diary.
 import { getState, upsert, remove, find } from '../store.js';
 import { esc, today, monthKey, fmtMonth, fmtDateLong, fmtDate, addDays } from '../util.js';
 import { openSheet, confirmSheet, toast, formData, icon } from '../ui.js';
 
 export const MOODS = [
-  ['gembira', '😄', 'Gembira'], ['ok', '🙂', 'Okay'], ['biasa', '😐', 'Biasa'],
-  ['penat', '😮‍💨', 'Penat'], ['sedih', '😢', 'Sedih'], ['marah', '😠', 'Marah'], ['sakit', '🤒', 'Sakit'],
+  ['gembira', '🥰', 'Happy'], ['ok', '🙂', 'Okay'], ['biasa', '😐', 'Meh'],
+  ['penat', '😮‍💨', 'Tired'], ['sedih', '😢', 'Sad'], ['marah', '😠', 'Upset'], ['sakit', '🤒', 'Unwell'],
 ];
 export const moodEmoji = (m) => MOODS.find(([k]) => k === m)?.[1] || '📝';
 
@@ -14,7 +14,7 @@ let query = '';
 export const sortedNotes = () =>
   [...getState().notes].sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || '').localeCompare(a.createdAt || ''));
 
-/** Bilangan hari berturut-turut (berakhir hari ini atau semalam) yang ada diari. */
+/** Number of consecutive days (ending today or yesterday) with a diary entry. */
 export function streak() {
   const days = new Set(getState().notes.map((n) => n.date));
   let d = today();
@@ -44,27 +44,27 @@ export function bindNoteCards(root) {
 export function openNoteForm(existing) {
   const n = existing || { date: today(), mood: 'ok', title: '', body: '' };
   openSheet({
-    title: existing ? `Diari · ${fmtDate(n.date)}` : 'Tulis diari',
+    title: existing ? `Diary · ${fmtDate(n.date)}` : 'Dear diary…',
     body: `
       <form class="form" id="noteForm">
-        <label class="field"><span>Tarikh</span>
+        <label class="field"><span>Date</span>
           <input name="date" type="date" required value="${esc(n.date)}">
         </label>
         <fieldset class="field">
-          <legend>Perasaan hari ini</legend>
+          <legend>How are you feeling?</legend>
           <div class="moods">
             ${MOODS.map(([k, e, l]) => `<label title="${l}"><input type="radio" name="mood" value="${k}" ${n.mood === k ? 'checked' : ''}><span>${e}<small>${l}</small></span></label>`).join('')}
           </div>
         </fieldset>
-        <label class="field"><span>Tajuk (pilihan)</span>
-          <input name="title" type="text" maxlength="100" value="${esc(n.title)}" placeholder="Ringkasan hari ini">
+        <label class="field"><span>Title (optional)</span>
+          <input name="title" type="text" maxlength="100" value="${esc(n.title)}" placeholder="Today in a few words">
         </label>
-        <label class="field"><span>Catatan</span>
-          <textarea name="body" rows="9" required placeholder="Apa yang berlaku hari ini? Apa yang disyukuri?">${esc(n.body)}</textarea>
+        <label class="field"><span>Entry</span>
+          <textarea name="body" rows="9" required placeholder="What happened today? What are you grateful for?">${esc(n.body)}</textarea>
         </label>
         <div class="row gap mt">
-          ${existing ? `<button type="button" class="btn ghost danger-text" data-del>${icon('trash')} Padam</button>` : ''}
-          <button class="btn primary grow" type="submit">${icon('check')} Simpan</button>
+          ${existing ? `<button type="button" class="btn ghost danger-text" data-del>${icon('trash')} Delete</button>` : ''}
+          <button class="btn primary grow" type="submit">${icon('check')} Save</button>
         </div>
       </form>`,
     onMount(root, close) {
@@ -73,11 +73,11 @@ export function openNoteForm(existing) {
         e.preventDefault();
         upsert('notes', { ...(existing || {}), ...formData(form) });
         close();
-        toast('Diari disimpan');
+        toast('Diary saved 💕');
       });
       root.querySelector('[data-del]')?.addEventListener('click', async () => {
         close();
-        if (await confirmSheet('Padam catatan diari ini?')) { remove('notes', existing.id); toast('Diari dipadam'); }
+        if (await confirmSheet('Delete this diary entry?')) { remove('notes', existing.id); toast('Entry deleted'); }
       });
     },
   });
@@ -89,9 +89,9 @@ function renderList() {
     !q || `${n.title} ${n.body} ${n.date}`.toLowerCase().includes(q));
   if (!notes.length) {
     return q
-      ? `<div class="empty"><div class="empty-emoji">🔍</div><p>Tiada catatan sepadan dengan "${esc(query)}".</p></div>`
-      : `<div class="empty"><div class="empty-emoji">📔</div><p>Belum ada diari. Mula tulis hari ini!</p>
-          <button class="btn primary" data-add>${icon('pen')} Tulis diari</button></div>`;
+      ? `<div class="empty"><div class="empty-emoji">🔍</div><p>No entries match "${esc(query)}".</p></div>`
+      : `<div class="empty"><div class="empty-emoji">📔</div><p>No diary entries yet. Start writing today!</p>
+          <button class="btn primary" data-add>${icon('pen')} Write diary</button></div>`;
   }
   const groups = new Map();
   for (const n of notes) {
@@ -100,25 +100,25 @@ function renderList() {
   }
   return [...groups].map(([k, items]) => `
     <section class="day-group">
-      <div class="day-head"><span>${fmtMonth(k)}</span><span class="muted">${items.length} catatan</span></div>
+      <div class="day-head"><span>${fmtMonth(k)}</span><span class="muted">${items.length} ${items.length === 1 ? 'entry' : 'entries'}</span></div>
       <div class="notes">${items.map(noteCard).join('')}</div>
     </section>`).join('');
 }
 
 export default {
-  title: 'Diari',
+  title: 'Diary',
   fab: () => openNoteForm(),
   render() {
     const s = streak();
     return `
       <div class="search">
         ${icon('search')}
-        <input type="search" id="noteSearch" placeholder="Cari diari…" value="${esc(query)}" aria-label="Cari diari">
+        <input type="search" id="noteSearch" placeholder="Search diary…" value="${esc(query)}" aria-label="Search diary">
       </div>
       <section class="stats three">
-        <div class="stat"><span class="stat-label">Jumlah catatan</span><span class="stat-val">${getState().notes.length}</span></div>
-        <div class="stat"><span class="stat-label">Berturut-turut</span><span class="stat-val">${s} hari 🔥</span></div>
-        <div class="stat"><span class="stat-label">Bulan ini</span><span class="stat-val">${getState().notes.filter((n) => monthKey(n.date) === monthKey(today())).length}</span></div>
+        <div class="stat"><span class="stat-label">Entries</span><span class="stat-val">${getState().notes.length}</span></div>
+        <div class="stat"><span class="stat-label">Streak</span><span class="stat-val">${s} ${s === 1 ? 'day' : 'days'} 🔥</span></div>
+        <div class="stat"><span class="stat-label">This month</span><span class="stat-val">${getState().notes.filter((n) => monthKey(n.date) === monthKey(today())).length}</span></div>
       </section>
       <div id="noteList">${renderList()}</div>`;
   },

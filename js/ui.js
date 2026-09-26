@@ -1,18 +1,18 @@
-// Komponen UI kecil: modal (bottom sheet), toast, pengesahan, ikon.
+// Small UI pieces: modal (bottom sheet), toast, confirmation, icons.
 import { $ } from './util.js';
 
 const dialog = () => $('#sheet');
 
 /**
- * Buka modal dengan tajuk & HTML badan. `onMount(root)` dipanggil selepas render.
- * Mengembalikan fungsi untuk menutup.
+ * Open a sheet with a title & body HTML. `onMount(root, close)` runs after render.
+ * Returns a function that closes it.
  */
 export function openSheet({ title, body, onMount }) {
   const d = dialog();
   d.innerHTML = `
     <div class="sheet-head">
       <h2 id="sheetTitle">${title}</h2>
-      <button class="icon-btn" data-close aria-label="Tutup">${icon('x')}</button>
+      <button class="icon-btn" data-close aria-label="Close">${icon('x')}</button>
     </div>
     <div class="sheet-body">${body}</div>`;
   const close = () => d.open && d.close();
@@ -25,14 +25,14 @@ export function openSheet({ title, body, onMount }) {
   return close;
 }
 
-export function confirmSheet(message, { ok = 'Padam', danger = true } = {}) {
+export function confirmSheet(message, { ok = 'Delete', danger = true } = {}) {
   return new Promise((resolve) => {
     let answered = false;
     openSheet({
-      title: 'Pasti?',
+      title: 'Are you sure?',
       body: `<p class="muted">${message}</p>
         <div class="row gap end mt">
-          <button class="btn ghost" data-close>Batal</button>
+          <button class="btn ghost" data-close>Cancel</button>
           <button class="btn ${danger ? 'danger' : 'primary'}" data-ok>${ok}</button>
         </div>`,
       onMount(root, close) {
@@ -54,7 +54,7 @@ export function toast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-/** Baca nilai borang sebagai objek. */
+/** Read form values as an object. */
 export const formData = (form) => Object.fromEntries(new FormData(form).entries());
 
 const ICONS = {

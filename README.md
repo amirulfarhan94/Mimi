@@ -1,54 +1,63 @@
-# Mimi — Diari, Belanja & Duit Kutu
+# Mimi 💕
 
-Web app mudah alih (PWA) untuk:
+A sweet little PWA made for Sayang — daily diary, expense tracker and duit kutu groups in one app.
 
-- **📔 Diari harian** — tulis catatan dengan mood, cari, dan kira hari berturut-turut.
-- **💸 Rekod belanja & pendapatan** — ikut kategori, navigasi bulan, pecahan kategori dan baki bulanan.
-- **🤝 Duit kutu** — urus banyak kumpulan sekaligus: **mingguan (7 hari)**, **setiap 10 hari**, **bulanan**, atau tempoh sendiri.
-  - Susun giliran ahli (atau 🎲 cabut undi), tanda slot **Saya** (boleh lebih dari satu kepala).
-  - Jadual pusingan automatik dengan tarikh & penerima, tanda siapa dah bayar, tunggakan ditanda ⚠️.
-  - Bayaran **Saya** automatik direkod sebagai belanja (kategori Kutu); duit giliran anda direkod sebagai pendapatan.
-- **🏠 Dashboard** — belanja hari ini/bulan ini, baki, carta 7 hari, kutu akan datang, giliran anda dapat, diari hari ini.
+Every time the app opens, the dashboard greets her with:
 
-## Mesra PWA
+> **Hi Sayang ❤️**
+> What can I help you with today?
+> — *Always here for you.*
 
-- Boleh dipasang ke skrin utama (Android/Chrome: *Pasang app*; iPhone/Safari: *Kongsi → Tambah ke Skrin Utama*).
-- Berfungsi **luar talian** (service worker cache app shell).
-- Mod gelap automatik, reka bentuk mudah alih dahulu, pintasan app (Rekod belanja / Tulis diari / Duit kutu).
+## Features
+
+- **📔 Diary** — daily entries with a mood, search, and a writing streak.
+- **💸 Expenses** — expenses & income by category, month navigation, category breakdown and monthly balance.
+- **🤝 Duit kutu** — manage many groups at once: **weekly**, **every 10 days**, **monthly**, or any custom interval.
+  - Set the turn order (or 🎲 shuffle), tick **Me** on your slot(s) — more than one is fine.
+  - Automatic round schedule with dates & recipients, per-member payment ticks, overdue rounds flagged ⚠️.
+  - Ticking your own payment adds a Kutu expense; receiving your pot adds Kutu income.
+- **🏠 Dashboard** — spent today / this month, balance, 7-day chart, upcoming kutu, your next payout, today's diary.
+
+## PWA
+
+- Installable (Android/Chrome: *Install app*; iPhone/Safari: *Share → Add to Home Screen*).
+- Works **offline** — the app shell, icons and fonts are all cached by the service worker.
+- Soft pink theme with automatic dark mode, mobile-first, app shortcuts.
 
 ## Data
 
-Semua data disimpan **dalam peranti** (localStorage) — tiada pelayan, tiada akaun.
-Gunakan **Tetapan → Eksport JSON** untuk sandaran berkala dan **Import JSON** untuk pulihkan / pindah peranti.
+All data stays **on the device** (localStorage) — no server, no account.
+Use **Settings → Export JSON** for regular backups and **Import JSON** to restore or move to a new phone.
 
-## Jalankan
+## Run locally
 
-Tiada build step — fail statik sahaja (HTML, CSS, ES modules).
+No build step — plain static files (HTML, CSS, ES modules).
 
 ```bash
-npx serve .          # atau: python3 -m http.server 8080
+npx serve .          # or: python3 -m http.server 8080
 ```
 
-Buka `http://localhost:3000`. Service worker memerlukan `localhost` atau HTTPS.
+Service workers need `localhost` or HTTPS.
 
 ### Deploy
 
-Muat naik folder ini ke mana-mana hosting statik (GitHub Pages, Netlify, Vercel, Cloudflare Pages).
-Semua laluan adalah relatif, jadi ia juga berfungsi di bawah sub-folder (cth. `username.github.io/Mimi/`).
+Upload this folder to any static host (GitHub Pages, Netlify, Vercel, Cloudflare Pages).
+All paths are relative, so it also works from a sub-folder (e.g. `username.github.io/Mimi/`).
 
-> Setiap kali mengubah fail app, naikkan `VERSION` dalam `sw.js` supaya pengguna menerima versi baru
-> (app akan papar *"Versi baru tersedia — Muat semula"*).
+> Whenever you change app files, bump `VERSION` in `sw.js` so installed copies pick up the update
+> (the app shows *"A new version is available — Reload"*).
 
-## Struktur
+## Structure
 
 ```
-index.html              shell app
-manifest.webmanifest    manifest PWA
-sw.js                   service worker (cache luar talian)
-css/style.css           gaya (terang & gelap)
-js/app.js               penghala hash, navigasi, FAB, kemas kini SW
-js/store.js             simpanan localStorage + sandaran
-js/kutu.js              logik kutu: jadual pusingan, status, bayaran
-js/views/*.js           Dashboard, Diari, Belanja, Kutu, Tetapan
-icons/                  ikon app (SVG + PNG + maskable)
+index.html              app shell
+manifest.webmanifest    PWA manifest
+sw.js                   service worker (offline cache)
+css/style.css           styles (light & dark)
+fonts/                  Quicksand + Dancing Script (SIL OFL)
+js/app.js               hash router, navigation, FAB, SW updates
+js/store.js             localStorage store + backup
+js/kutu.js              kutu logic: round schedule, status, payments
+js/views/*.js           Dashboard, Diary, Expenses, Kutu, Settings
+icons/                  app icons generated from the Mimi logo (any + maskable + Apple)
 ```
