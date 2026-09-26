@@ -37,7 +37,10 @@ const ASSETS = [
 // A new version takes over as soon as it is downloaded (no waiting for every window to close),
 // so reopening the app is enough to get it. Pages already open keep their code until reloaded.
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+  // cache: 'reload' skips the browser's HTTP cache, so a new version never stores stale files.
+  e.waitUntil(caches.open(VERSION)
+    .then((c) => c.addAll(ASSETS.map((url) => new Request(url, { cache: 'reload' }))))
+    .then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (e) => {
