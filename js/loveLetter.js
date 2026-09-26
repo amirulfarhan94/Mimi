@@ -1,6 +1,6 @@
 // Mimi Love Letter logic: which letter belongs to a date, special-date overrides and "Another Note".
 // Everything runs locally from bundled data — no network needed.
-import { LOVE_LETTERS } from './data/loveLetters.js';
+import { LOVE_LETTERS, SIGNATURE } from './data/loveLetters.js';
 import { SPECIAL_DATES } from './data/specialLetters.js';
 
 // Days before each month in a NON-leap year, so 1 March is always day 60 and 31 December day 365.
@@ -39,7 +39,7 @@ export function noteFor(date = new Date()) {
   }
   const number = letterNumber(date);
   const letter = LOVE_LETTERS[number - 1];
-  return { kind: 'daily', number, category: letter.category, text: letter.text, signature: 'Amirul' };
+  return { kind: 'daily', number, category: letter.category, text: letter.text, signature: SIGNATURE };
 }
 
 /**
@@ -60,7 +60,7 @@ export function anotherNotes(primary) {
   const refill = () => {
     deck = LOVE_LETTERS
       .filter((l) => l.text !== primary.text)
-      .map((l) => ({ kind: 'daily', number: l.day, category: l.category, text: l.text, signature: 'Amirul' }));
+      .map((l) => ({ kind: 'daily', number: l.day, category: l.category, text: l.text, signature: SIGNATURE }));
     for (let i = deck.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [deck[i], deck[j]] = [deck[j], deck[i]];

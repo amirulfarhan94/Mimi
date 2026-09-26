@@ -15,6 +15,9 @@ from pathlib import Path
 import openpyxl
 
 ROOT = Path(__file__).resolve().parent.parent
+
+# How the writer is named in the app: the letters' sign-off, and any "Amirul" in the workbook text.
+SIGNATURE = 'Hubby'
 MONTHS = {m: i for i, m in enumerate(
     ['january', 'february', 'march', 'april', 'may', 'june', 'july',
      'august', 'september', 'october', 'november', 'december'], start=1)}
@@ -25,7 +28,8 @@ OCCASIONS = {
                           title='Happy Birthday, Sayang ❤️',
                           cardTitle='A Birthday Letter for You',
                           cardSubtitle='Today is all about you… open it ✨'),
-    'Amirul Birthday': dict(id='amirul-birthday', emoji='🎂', theme='birthday',
+    # Keyed by the workbook's "Occasion" column.
+    'Amirul Birthday': dict(id='hubby-birthday', label='Hubby Birthday', emoji='🎂', theme='birthday',
                             title="Someone's Birthday Today! ❤️",
                             cardTitle="Someone's Birthday Today!",
                             cardSubtitle='There’s a little note about it… 🎈'),
@@ -36,21 +40,25 @@ OCCASIONS = {
 }
 
 js = lambda s: json.dumps(s, ensure_ascii=False)
+rename = lambda s: re.sub(r'\bAmirul\b', SIGNATURE, s)
 
 
 def main(xlsx):
     wb = openpyxl.load_workbook(xlsx, read_only=True)
 
     rows = list(wb['365 Love Letters'].iter_rows(min_row=2, values_only=True))
-    letters = [(int(r[0]), str(r[1]).strip(), str(r[2]).strip()) for r in rows if r and r[2]]
+    letters = [(int(r[0]), str(r[1]).strip(), rename(str(r[2]).strip())) for r in rows if r and r[2]]
     assert [d for d, _, _ in letters] == list(range(1, 366)), 'expected days 1..365 in order'
 
     out = [
-        '// Mimi Love Letter — 365 daily letters from Amirul, one per calendar day.',
+        '// Mimi Love Letter — 365 daily letters from Hubby, one per calendar day.',
         '// Day 1 = 1 January … Day 365 = 31 December (see js/loveLetter.js for the date mapping).',
         '// Source: Mimi_365_Love_Letters_Final_Review.xlsx (sheet "365 Love Letters").',
         '// Edit a letter by changing its `text`. Keep exactly 365 entries in day order.',
         '// Regenerate from the workbook with: python3 scripts/import-love-letters.py <file.xlsx>',
+        '',
+        '// Sign-off shown under every daily letter ("— Hubby").',
+        f'export const SIGNATURE = {js(SIGNATURE)};',
         '',
         'export const LOVE_LETTERS = [',
     ]
@@ -66,11 +74,13 @@ def main(xlsx):
         text = str(message).strip().replace('\r\n', '\n')
         # A trailing "— Amirul" line is shown as the letter's signature instead of inside the text.
         m = re.search(r'\n\s*[—-]\s*Amirul\s*$', text)
-        signature = 'Amirul' if m else None
+        signature = SIGNATURE if m else None
         if m:
             text = text[:m.start()].rstrip()
-        specials.append(dict(month=MONTHS[month.lower()], day=int(day), occasion=occasion,
-                             **OCCASIONS[occasion], messages=[dict(text=text, signature=signature)]))
+        info = dict(OCCASIONS[occasion])
+        label = info.pop('label', occasion)
+        specials.append(dict(month=MONTHS[month.lower()], day=int(day), occasion=label,
+                             **info, messages=[dict(text=rename(text), signature=signature)]))
 
     out = [
         '// Mimi Love Letter — special dates. These override the normal daily letter.',
@@ -78,7 +88,7 @@ def main(xlsx):
         '//',
         '// Each occasion can hold several messages: add more objects to `messages`.',
         '// The popup shows one per year (rotating), and "Another Note" offers the others first.',
-        '// `signature: null` shows no "— Amirul" sign-off.',
+        '// `signature: null` shows no "— Hubby" sign-off.',
         '',
         'export const SPECIAL_DATES = [',
     ]

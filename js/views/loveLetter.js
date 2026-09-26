@@ -1,4 +1,4 @@
-// Mimi Love Letter 💌 — dashboard card + popup with today's note from Amirul.
+// Mimi Love Letter 💌 — dashboard card + popup with today's note from Hubby.
 import { esc } from '../util.js';
 import { noteFor, anotherNotes } from '../loveLetter.js';
 

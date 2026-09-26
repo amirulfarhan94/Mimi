@@ -10,7 +10,7 @@ Every time the app opens, the dashboard greets her with:
 
 ## Features
 
-- **💌 Mimi Love Letter** — a daily note from Amirul on the dashboard. Tap the card for a popup with today's letter, **Another Note** for a bonus one, and special letters on **2 April** (Mimi's birthday 🎂), **10 October** (Amirul's birthday 🎂) and **30 November** (anniversary 💍).
+- **💌 Mimi Love Letter** — a daily note from Hubby on the dashboard. Tap the card for a popup with today's letter, **Another Note** for a bonus one, and special letters on **2 April** (Mimi's birthday 🎂), **10 October** (Hubby's birthday 🎂) and **30 November** (anniversary 💍).
 - **📔 Diary** — daily entries with a mood, search, and a writing streak.
 - **✅ To-do** — quick add, Today / Upcoming / All views, custom lists with emoji (🏠 Home, 🛒 Shopping, 💼 Work, 💕 Personal…), due date & time, ★ important, and **repeating tasks** (daily, weekly, monthly or every X days — ticking one creates the next).
 - **💸 Expenses** — expenses & income by category, month navigation, category breakdown and monthly balance.
@@ -31,7 +31,7 @@ Every time the app opens, the dashboard greets her with:
 The 365 daily letters and the special-date messages are bundled with the app (they work offline and never leave the device):
 
 - `js/data/loveLetters.js` — 365 letters, day 1 = 1 January … day 365 = 31 December. Edit any `text` directly.
-- `js/data/specialLetters.js` — birthdays & anniversary. Each occasion has a `messages` list; add more messages and the app rotates one per year (the others appear under *Another Note*). `signature: null` hides the "— Amirul" sign-off.
+- `js/data/specialLetters.js` — birthdays & anniversary. Each occasion has a `messages` list; add more messages and the app rotates one per year (the others appear under *Another Note*). `signature: null` hides the "— Hubby" sign-off. The sign-off name is `SIGNATURE` in `js/data/loveLetters.js`.
 - `scripts/import-love-letters.py <workbook.xlsx>` — regenerate both files from the review workbook (`pip install openpyxl`).
 
 How a date picks its letter (`js/loveLetter.js`): special dates first; otherwise the day of the year on a non-leap calendar (so 1 March is always #60 and 31 December #365). 29 February gets a stable "bonus" letter chosen from the year. After editing letters, bump `VERSION` in `sw.js`.

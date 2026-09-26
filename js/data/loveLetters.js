@@ -1,8 +1,11 @@
-// Mimi Love Letter — 365 daily letters from Amirul, one per calendar day.
+// Mimi Love Letter — 365 daily letters from Hubby, one per calendar day.
 // Day 1 = 1 January … Day 365 = 31 December (see js/loveLetter.js for the date mapping).
 // Source: Mimi_365_Love_Letters_Final_Review.xlsx (sheet "365 Love Letters").
 // Edit a letter by changing its `text`. Keep exactly 365 entries in day order.
 // Regenerate from the workbook with: python3 scripts/import-love-letters.py <file.xlsx>
+
+// Sign-off shown under every daily letter ("— Hubby").
+export const SIGNATURE = "Hubby";
 
 export const LOVE_LETTERS = [
   { day: 1, category: "Love", text: "Just a little reminder, Sayang… no matter how busy life gets, I hope you always know that you have someone who loves you, appreciates you, and will always be here for you. ❤️" },
