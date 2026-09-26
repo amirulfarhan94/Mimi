@@ -3,6 +3,7 @@ import { subscribe } from './store.js';
 import { $, $$ } from './util.js';
 import { icon } from './ui.js';
 import { registerSW, onInstallChange } from './pwa.js';
+import { scheduleSync } from './reminders.js';
 import dashboard from './views/dashboard.js';
 import diary from './views/diary.js';
 import expenses from './views/expenses.js';
@@ -57,12 +58,14 @@ function render({ keepScroll = false } = {}) {
 $$('[data-icon]').forEach((el) => { el.insertAdjacentHTML('afterbegin', icon(el.dataset.icon)); });
 
 window.addEventListener('hashchange', () => render());
-subscribe(() => render({ keepScroll: true }));
+subscribe(() => { render({ keepScroll: true }); scheduleSync(); });
+scheduleSync();
 onInstallChange(() => { if (resolve().view === settings) render({ keepScroll: true }); });
 
 // Refresh dates when the app is reopened on another day
 let lastDay = new Date().toDateString();
 document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') scheduleSync();
   if (document.visibilityState === 'visible' && new Date().toDateString() !== lastDay) {
     lastDay = new Date().toDateString();
     render({ keepScroll: true });
