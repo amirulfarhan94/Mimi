@@ -9,6 +9,7 @@ import { openTodoForm, todoRow, bindTodoRows } from './todo.js';
 import { sortTodos, isDueToday } from '../todo.js';
 import { upcomingEvents, myUpcomingPayouts, pot } from '../kutu.js';
 import { letterCard, bindLetterCard } from './loveLetter.js';
+import { weightCard, openWeightForm } from './weight.js';
 
 /** Vertical bars of the last 7 days of spending (one series; values in tooltip & today's label). */
 function weekChart(txns) {
@@ -69,6 +70,8 @@ export default {
           : `<button class="prompt" data-q="todo"><span>🌸</span><span class="grow"><b>Nothing due today</b><br><span class="small muted">Tap to add something to your list.</span></span>${icon('right')}</button>`}
       </section>
 
+      ${weightCard()}
+
       <section class="stats three">
         <div class="stat"><span class="stat-label">Spent today</span><span class="stat-val">${rmStat(todayOut)}</span></div>
         <div class="stat"><span class="stat-label">Spent this month</span><span class="stat-val out">${rmStat(mTot.out)}</span></div>
@@ -117,7 +120,7 @@ export default {
   },
   mount(root) {
     root.querySelectorAll('[data-q]').forEach((b) => b.addEventListener('click', () => {
-      ({ txn: () => openTxnForm(), todo: () => openTodoForm(null, { due: today() }), note: () => openNoteForm(), kutu: () => openGroupForm() })[b.dataset.q]();
+      ({ txn: () => openTxnForm(), todo: () => openTodoForm(null, { due: today() }), note: () => openNoteForm(), kutu: () => openGroupForm(), weight: () => openWeightForm() })[b.dataset.q]();
     }));
     bindTxnRows(root);
     bindNoteCards(root);

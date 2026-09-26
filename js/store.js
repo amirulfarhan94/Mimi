@@ -15,6 +15,8 @@ const empty = () => ({
     { id: 'work', name: 'Work', emoji: '💼' },
     { id: 'personal', name: 'Personal', emoji: '💕' },
   ],
+  weights: [], // { date, kg, note } — one per day, see js/weight.js
+  weightSettings: null, // see js/weight.js (defaults filled in there)
   settings: { name: '' },
 });
 

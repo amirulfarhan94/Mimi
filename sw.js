@@ -2,7 +2,7 @@
 // Bump VERSION whenever app files change so users receive the new version.
 importScripts('./push-config.js');
 
-const VERSION = 'mimi-v7';
+const VERSION = 'mimi-v8';
 const PUSH_CACHE = 'mimi-push'; // device token for reminders — kept across versions
 const ASSETS = [
   './',
@@ -28,6 +28,8 @@ const ASSETS = [
   './js/data/specialLetters.js',
   './js/data/letterOverrides.js',
   './js/reminders.js',
+  './js/weight.js',
+  './js/views/weight.js',
   './push-config.js',
   './icons/badge-96.png',
   './fonts/quicksand-latin.woff2',
