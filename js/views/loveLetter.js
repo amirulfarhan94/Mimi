@@ -1,6 +1,6 @@
 // Mimi Love Letter 💌 — dashboard card + popup with today's note from Hubby.
 import { esc } from '../util.js';
-import { noteFor, anotherNotes } from '../loveLetter.js';
+import { noteFor } from '../loveLetter.js';
 
 /** Envelope with a heart seal, a peeking letter and a few sparkles (decorative). */
 const envelope = (cls = '') => `
@@ -58,11 +58,9 @@ function letterHTML(note) {
     ${note.signature ? `<p class="letter-sign">— ${esc(note.signature)}</p>` : ''}`;
 }
 
-function headHTML(note, primary) {
+function headHTML(note) {
   const o = note.kind === 'special' ? note.occasion : null;
-  const kicker = note === primary
-    ? (o ? 'A special letter for today' : 'Today’s letter')
-    : 'Another little note';
+  const kicker = o ? 'A special letter for today' : 'Today’s letter';
   return `
     <div class="letter-icon" aria-hidden="true">${o ? `<span class="letter-emoji">${o.emoji}</span>` : envelope('small')}</div>
     <h2 class="letter-title" id="letterTitle">${o ? esc(o.title) : 'A Little Note for You'}</h2>
@@ -81,41 +79,26 @@ function sparkles(theme) {
   }).join('')}</div>`;
 }
 
-/** Open the popup with today's note (special dates override the daily letter). */
+/**
+ * Open the popup with today's one note (special dates override the daily letter).
+ * The note depends only on the date, so it stays the same all day and changes by itself tomorrow.
+ */
 export function openLetter(date = new Date()) {
   const d = getDialog();
-  const primary = noteFor(date);
-  const next = anotherNotes(primary);
+  const note = noteFor(date);
+  const theme = note.kind === 'special' ? note.occasion.theme : '';
 
-  const theme = (n) => (n.kind === 'special' ? `special ${n.occasion.theme}` : '');
   d.innerHTML = `
-    <article class="letter-paper ${theme(primary)}">
-      ${sparkles(primary.kind === 'special' ? primary.occasion.theme : '')}
-      <header class="letter-head">${headHTML(primary, primary)}</header>
-      <div class="letter-body" aria-live="polite">${letterHTML(primary)}</div>
+    <article class="letter-paper ${theme ? `special ${theme}` : ''}">
+      ${sparkles(theme)}
+      <header class="letter-head">${headHTML(note)}</header>
+      <div class="letter-body">${letterHTML(note)}</div>
       <footer class="letter-actions">
-        <button class="btn primary block" data-another>💌 Another Note</button>
-        <button class="btn ghost block" data-today hidden>↩ Back to today’s letter</button>
-        <button class="btn ghost block" data-close>Close</button>
+        <button class="btn primary block" data-close>Close</button>
       </footer>
     </article>`;
 
-  const paper = d.querySelector('.letter-paper');
-  const show = (note) => {
-    paper.className = `letter-paper ${theme(note)}`;
-    const head = d.querySelector('.letter-head');
-    const body = d.querySelector('.letter-body');
-    head.innerHTML = headHTML(note, primary);
-    body.innerHTML = letterHTML(note);
-    body.scrollTop = 0;
-    d.querySelector('[data-today]').hidden = note === primary;
-    // Restart the soft fade for each new note.
-    [head, body].forEach((el) => { el.classList.remove('fade-in'); void el.offsetWidth; el.classList.add('fade-in'); });
-  };
-
-  d.querySelector('[data-another]').addEventListener('click', () => show(next()));
-  d.querySelector('[data-today]').addEventListener('click', () => show(primary));
   d.querySelector('[data-close]').addEventListener('click', () => d.close());
   d.showModal();
-  d.querySelector('[data-another]').focus({ preventScroll: true });
+  d.querySelector('[data-close]').focus({ preventScroll: true });
 }

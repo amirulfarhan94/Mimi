@@ -2,7 +2,7 @@
 // Source: Mimi_365_Love_Letters_Final_Review.xlsx (sheet "Special Dates").
 //
 // Each occasion can hold several messages: add more objects to `messages`.
-// The popup shows one per year (rotating), and "Another Note" offers the others first.
+// The popup shows one of them per year (rotating).
 // `signature: null` shows no "— Hubby" sign-off.
 
 export const SPECIAL_DATES = [

@@ -405,7 +405,6 @@ p { margin: 0; }
 .letter-sign { font-family: var(--font-script); font-size: 26px; color: var(--primary); text-align: right; margin-top: 12px; }
 .letter-actions { flex: none; display: grid; gap: 8px; padding: 12px 22px calc(20px + var(--safe-b)); position: relative; z-index: 1; }
 .letter-actions .btn { min-height: 48px; font-size: 15.5px; }
-.fade-in { animation: note-fade .35s ease-out; }
 
 /* Special dates: warmer birthday paper, rosier anniversary paper, confetti / hearts that float once. */
 .letter-paper.birthday { --letter-1: #fdebd3; border-color: #f0cf9f; }
@@ -424,7 +423,6 @@ p { margin: 0; }
 
 @keyframes letter-in { from { opacity: 0; transform: translateY(18px) scale(.95); } to { opacity: 1; transform: none; } }
 @keyframes backdrop-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes note-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 @keyframes emoji-pop { from { opacity: 0; transform: scale(.4) rotate(-12deg); } to { opacity: 1; transform: none; } }
 @keyframes fall { 0% { opacity: 0; transform: translateY(0) rotate(0); } 15% { opacity: .9; } 100% { opacity: 0; transform: translateY(420px) rotate(220deg); } }
 @keyframes rise { 0% { opacity: 0; transform: translateY(0) scale(.8); } 20% { opacity: .8; } 100% { opacity: 0; transform: translateY(-460px) scale(1.2); } }
