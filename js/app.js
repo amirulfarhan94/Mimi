@@ -38,7 +38,7 @@ function render({ keepScroll = false } = {}) {
   main.innerHTML = route.view.render(route.params);
   route.view.mount?.(main, () => render({ keepScroll: true }), route.params);
 
-  $('#pageTitle').textContent = route.view === dashboard ? 'Mimi' : route.view.title;
+  $('#pageTitle').textContent = route.view === dashboard ? 'Dear Mimi' : route.view.title;
   document.title = route.view === dashboard ? 'Mimi' : `${route.view.title} · Mimi`;
   $$('.tabbar a').forEach((a) => a.classList.toggle('active', a.dataset.tab === route.tab));
   $$('.tabbar a').forEach((a) => a.toggleAttribute('aria-current', a.dataset.tab === route.tab));
