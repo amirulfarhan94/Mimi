@@ -69,20 +69,12 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
-// Reload only after the user accepts an update (not on first install).
-let updateRequested = false;
-registerSW((reg) => {
+// A new version is installed in the background; offer a reload so this page switches to it
+// (next time the app is opened it is used automatically).
+registerSW(() => {
   const bar = $('#updateBar');
   bar.hidden = false;
-  bar.querySelector('button').onclick = () => {
-    updateRequested = true;
-    reg.waiting?.postMessage('SKIP_WAITING');
-  };
-});
-navigator.serviceWorker?.addEventListener('controllerchange', () => {
-  if (!updateRequested) return;
-  updateRequested = false;
-  location.reload();
+  bar.querySelector('button').onclick = () => location.reload();
 });
 
 render();

@@ -57,8 +57,9 @@ Service workers need `localhost` or HTTPS.
 Upload this folder to any static host (GitHub Pages, Netlify, Vercel, Cloudflare Pages).
 All paths are relative, so it also works from a sub-folder (e.g. `username.github.io/Mimi/`).
 
-> Whenever you change app files, bump `VERSION` in `sw.js` so installed copies pick up the update
-> (the app shows *"A new version is available — Reload"*).
+> Whenever you change app files, bump `VERSION` in `sw.js` so installed copies pick up the update.
+> The new version installs itself in the background: the app shows *"A new version is available — Reload"*,
+> and the next time it is opened it is already up to date.
 
 ## Structure
 
