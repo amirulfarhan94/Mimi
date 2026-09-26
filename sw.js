@@ -1,6 +1,6 @@
 // Service worker: caches the app shell for offline use.
 // Bump VERSION whenever app files change so users receive the new version.
-const VERSION = 'mimi-v5';
+const VERSION = 'mimi-v6';
 const ASSETS = [
   './',
   './index.html',
@@ -23,6 +23,7 @@ const ASSETS = [
   './js/loveLetter.js',
   './js/data/loveLetters.js',
   './js/data/specialLetters.js',
+  './js/data/letterOverrides.js',
   './fonts/quicksand-latin.woff2',
   './fonts/dancing-script-latin.woff2',
   './icons/favicon-48.png',
