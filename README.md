@@ -1,0 +1,63 @@
+# Mimi 💕
+
+A sweet little PWA made for Sayang — daily diary, expense tracker and duit kutu groups in one app.
+
+Every time the app opens, the dashboard greets her with:
+
+> **Hi Sayang ❤️**
+> What can I help you with today?
+> — *Always here for you.*
+
+## Features
+
+- **📔 Diary** — daily entries with a mood, search, and a writing streak.
+- **💸 Expenses** — expenses & income by category, month navigation, category breakdown and monthly balance.
+- **🤝 Duit kutu** — manage many groups at once: **weekly**, **every 10 days**, **monthly**, or any custom interval.
+  - Set the turn order (or 🎲 shuffle), tick **Me** on your slot(s) — more than one is fine.
+  - Automatic round schedule with dates & recipients, per-member payment ticks, overdue rounds flagged ⚠️.
+  - Ticking your own payment adds a Kutu expense; receiving your pot adds Kutu income.
+- **🏠 Dashboard** — spent today / this month, balance, 7-day chart, upcoming kutu, your next payout, today's diary.
+
+## PWA
+
+- Installable (Android/Chrome: *Install app*; iPhone/Safari: *Share → Add to Home Screen*).
+- Works **offline** — the app shell, icons and fonts are all cached by the service worker.
+- Soft pink theme with automatic dark mode, mobile-first, app shortcuts.
+
+## Data
+
+All data stays **on the device** (localStorage) — no server, no account.
+Use **Settings → Export JSON** for regular backups and **Import JSON** to restore or move to a new phone.
+
+## Run locally
+
+No build step — plain static files (HTML, CSS, ES modules).
+
+```bash
+npx serve .          # or: python3 -m http.server 8080
+```
+
+Service workers need `localhost` or HTTPS.
+
+### Deploy
+
+Upload this folder to any static host (GitHub Pages, Netlify, Vercel, Cloudflare Pages).
+All paths are relative, so it also works from a sub-folder (e.g. `username.github.io/Mimi/`).
+
+> Whenever you change app files, bump `VERSION` in `sw.js` so installed copies pick up the update
+> (the app shows *"A new version is available — Reload"*).
+
+## Structure
+
+```
+index.html              app shell
+manifest.webmanifest    PWA manifest
+sw.js                   service worker (offline cache)
+css/style.css           styles (light & dark)
+fonts/                  Quicksand + Dancing Script (SIL OFL)
+js/app.js               hash router, navigation, FAB, SW updates
+js/store.js             localStorage store + backup
+js/kutu.js              kutu logic: round schedule, status, payments
+js/views/*.js           Dashboard, Diary, Expenses, Kutu, Settings
+icons/                  app icons generated from the Mimi logo (any + maskable + Apple)
+```
