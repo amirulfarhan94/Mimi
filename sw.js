@@ -1,6 +1,6 @@
 // Service worker: caches the app shell for offline use.
 // Bump VERSION whenever app files change so users receive the new version.
-const VERSION = 'mimi-v4';
+const VERSION = 'mimi-v5';
 const ASSETS = [
   './',
   './index.html',
@@ -33,8 +33,10 @@ const ASSETS = [
   './icons/apple-touch-icon.png',
 ];
 
+// A new version takes over as soon as it is downloaded (no waiting for every window to close),
+// so reopening the app is enough to get it. Pages already open keep their code until reloaded.
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(ASSETS)));
+  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (e) => {
