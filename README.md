@@ -5,11 +5,13 @@ A sweet little PWA made for Sayang — daily diary, expense tracker and duit kut
 Every time the app opens, the dashboard greets her with:
 
 > **Hi Sayang ❤️**
-> What can I help you with today?
-> — *Always here for you.*
+> What would you like to do today?
+
+…with today's 💌 love letter from Hubby right below it.
 
 ## Features
 
+- **💌 Mimi Love Letter** — a daily note from Hubby on the dashboard. Tap the card to read today's one letter — it changes by itself every day — with special letters on **2 April** (Mimi's birthday 🎂), **10 October** (Hubby's birthday 🎂) and **30 November** (anniversary 💍).
 - **📔 Diary** — daily entries with a mood, search, and a writing streak.
 - **✅ To-do** — quick add, Today / Upcoming / All views, custom lists with emoji (🏠 Home, 🛒 Shopping, 💼 Work, 💕 Personal…), due date & time, ★ important, and **repeating tasks** (daily, weekly, monthly or every X days — ticking one creates the next).
 - **💸 Expenses** — expenses & income by category, month navigation, category breakdown and monthly balance.
@@ -24,6 +26,16 @@ Every time the app opens, the dashboard greets her with:
 - Installable (Android/Chrome: *Install app*; iPhone/Safari: *Share → Add to Home Screen*).
 - Works **offline** — the app shell, icons and fonts are all cached by the service worker.
 - Soft pink theme with automatic dark mode, mobile-first, app shortcuts.
+
+## Love letters
+
+The 365 daily letters and the special-date messages are bundled with the app (they work offline and never leave the device):
+
+- `js/data/loveLetters.js` — 365 letters, day 1 = 1 January … day 365 = 31 December. Edit any `text` directly.
+- `js/data/specialLetters.js` — birthdays & anniversary. Each occasion has a `messages` list; add more messages and the app shows one of them per year (rotating). `signature: null` hides the "— Hubby" sign-off. The sign-off name is `SIGNATURE` in `js/data/loveLetters.js`.
+- `scripts/import-love-letters.py <workbook.xlsx>` — regenerate both files from the review workbook (`pip install openpyxl`).
+
+How a date picks its letter (`js/loveLetter.js`): special dates first; otherwise the day of the year on a non-leap calendar (so 1 March is always #60 and 31 December #365). 29 February gets a stable "bonus" letter chosen from the year. After editing letters, bump `VERSION` in `sw.js`.
 
 ## Data
 
@@ -60,6 +72,9 @@ js/app.js               hash router, navigation, FAB, SW updates
 js/store.js             localStorage store + backup
 js/kutu.js              kutu logic: round schedule, status, payments
 js/todo.js              to-do logic: sorting, repeating tasks, lists
-js/views/*.js           Dashboard, Diary, To-do, Expenses, Kutu, Settings
+js/loveLetter.js        love letter logic: date → letter, special dates
+js/data/                bundled love letters (daily + special dates)
+scripts/                import-love-letters.py (workbook → js/data)
+js/views/*.js           Dashboard, Diary, To-do, Expenses, Kutu, Settings, Love Letter card & popup
 icons/                  app icons generated from the Mimi logo (any + maskable + Apple)
 ```
