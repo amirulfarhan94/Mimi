@@ -33,6 +33,7 @@ The 365 daily letters and the special-date messages are bundled with the app (th
 
 - `js/data/loveLetters.js` — 365 letters, day 1 = 1 January … day 365 = 31 December. Edit any `text` directly.
 - `js/data/specialLetters.js` — birthdays & anniversary. Each occasion has a `messages` list; add more messages and the app shows one of them per year (rotating). `signature: null` hides the "— Hubby" sign-off. The sign-off name is `SIGNATURE` in `js/data/loveLetters.js`.
+- `js/data/letterOverrides.js` — pick a different letter for one exact date, e.g. `'2026-09-26': 2`. Every other day is unaffected; special dates still win.
 - `scripts/import-love-letters.py <workbook.xlsx>` — regenerate both files from the review workbook (`pip install openpyxl`).
 
 How a date picks its letter (`js/loveLetter.js`): special dates first; otherwise the day of the year on a non-leap calendar (so 1 March is always #60 and 31 December #365). 29 February gets a stable "bonus" letter chosen from the year. After editing letters, bump `VERSION` in `sw.js`.

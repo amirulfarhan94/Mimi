@@ -1,6 +1,6 @@
 // Service worker: caches the app shell for offline use.
 // Bump VERSION whenever app files change so users receive the new version.
-const VERSION = 'mimi-v5';
+const VERSION = 'mimi-v6';
 const ASSETS = [
   './',
   './index.html',
@@ -23,6 +23,7 @@ const ASSETS = [
   './js/loveLetter.js',
   './js/data/loveLetters.js',
   './js/data/specialLetters.js',
+  './js/data/letterOverrides.js',
   './fonts/quicksand-latin.woff2',
   './fonts/dancing-script-latin.woff2',
   './icons/favicon-48.png',
@@ -36,7 +37,10 @@ const ASSETS = [
 // A new version takes over as soon as it is downloaded (no waiting for every window to close),
 // so reopening the app is enough to get it. Pages already open keep their code until reloaded.
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(ASSETS)).then(() => self.skipWaiting()));
+  // cache: 'reload' skips the browser's HTTP cache, so a new version never stores stale files.
+  e.waitUntil(caches.open(VERSION)
+    .then((c) => c.addAll(ASSETS.map((url) => new Request(url, { cache: 'reload' }))))
+    .then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (e) => {
