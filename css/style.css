@@ -109,7 +109,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 /* ---------- Tabbar ---------- */
 .tabbar {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
-  display: grid; grid-template-columns: repeat(4, 1fr);
+  display: grid; grid-template-columns: repeat(5, 1fr);
   height: calc(var(--tabbar-h) + var(--safe-b)); padding-bottom: var(--safe-b);
   background: var(--surface); border-top: 1px solid var(--border);
   box-shadow: 0 -4px 20px rgb(201 47 98 / .06);
@@ -219,7 +219,7 @@ p { margin: 0; }
 .love-date { font-size: 12.5px; color: var(--text-2); margin-top: 12px; font-weight: 600; letter-spacing: .02em; }
 .love-hearts { position: absolute; top: 12px; right: 16px; color: var(--accent); opacity: .55; font-size: 13px; letter-spacing: 4px; }
 .made-with { text-align: center; font-family: var(--font-script); font-size: 20px; color: var(--primary); margin: 8px 0; }
-.quick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 .quick-btn {
   display: grid; justify-items: center; gap: 4px; padding: 12px 6px; border-radius: 14px;
   background: var(--surface); border: 1px solid var(--border); cursor: pointer; font-size: 12.5px; font-weight: 700;
@@ -320,6 +320,45 @@ p { margin: 0; }
 .moods input:checked + span { background: var(--primary-soft); border-color: var(--primary); }
 .moods input:focus-visible + span { outline: 2px solid var(--primary); }
 
+/* ---------- To-do ---------- */
+.todos { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; }
+.card .todos { border: 0; background: transparent; margin: 0 -6px; }
+.todo { display: flex; align-items: center; gap: 4px; padding: 4px 8px 4px 6px; background: var(--surface); min-width: 0; }
+.card .todo { background: transparent; }
+.todo-check {
+  flex: none; width: 44px; height: 44px; display: grid; place-items: center;
+  background: none; border: 0; cursor: pointer; color: transparent;
+}
+.todo-check::before { content: ""; grid-area: 1 / 1; width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--accent); transition: background .2s, transform .2s; }
+.todo-check .ic { grid-area: 1 / 1; width: 15px; height: 15px; stroke-width: 3; z-index: 1; }
+.todo.done .todo-check::before, .todo.checking .todo-check::before { background: var(--accent); }
+.todo.done .todo-check, .todo.checking .todo-check { color: var(--primary-ink); }
+.todo.checking .todo-check::before { animation: pop .38s ease-out; }
+.todo.checking .li-title { text-decoration: line-through; opacity: .6; transition: opacity .3s; }
+.todo.done .li-title { text-decoration: line-through; color: var(--muted); }
+.todo-main { flex: 1; min-width: 0; text-align: left; background: none; border: 0; padding: 8px 4px; cursor: pointer; }
+.todo.overdue .todo-check::before { border-color: var(--out); }
+.late-text { color: var(--out); font-weight: 700; }
+.star { color: var(--accent); }
+@keyframes pop { 0% { transform: scale(.7); } 60% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+.quick-add { display: flex; align-items: center; gap: 8px; background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 4px 4px 4px 14px; box-shadow: var(--shadow); color: var(--accent); }
+form.quick-add input { flex: 1; min-width: 0; border: 0; background: transparent; outline: none; min-height: 40px; padding: 0; font-size: 16px; }
+form.quick-add input:focus { outline: none; }
+.count { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 99px; background: var(--primary-soft); color: var(--primary); font-size: 11px; font-weight: 700; }
+.ghost-chip { color: var(--primary); border-style: dashed; display: inline-flex; align-items: center; gap: 4px; }
+.ghost-chip .ic { width: 14px; height: 14px; }
+.done-section summary { cursor: pointer; font-weight: 700; color: var(--text-2); padding: 6px 4px; }
+.done-section .todos { margin-top: 6px; }
+.lists-edit { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.list-row { display: flex; align-items: center; gap: 6px; }
+.sheet input.emoji-input { width: 52px; flex: none; text-align: center; padding: 10px 4px; }
+.sheet input.time-input { width: 148px; flex: none; }
+.form .chips { flex-wrap: wrap; }
+.hint.mt { margin-top: 10px; }
+.star-toggle { font-weight: 600; }
+.chip.on { background: var(--primary); border-color: var(--primary); color: var(--primary-ink); }
+
 /* ---------- Kutu ---------- */
 .kutu-list { display: grid; gap: 12px; }
 .kutu-card { gap: 8px; }
@@ -368,7 +407,7 @@ p { margin: 0; }
 .form { display: grid; gap: 14px; }
 .field { display: grid; gap: 6px; border: 0; padding: 0; margin: 0; min-width: 0; }
 .field > span, .field > legend, .label { font-size: 13px; font-weight: 600; color: var(--text-2); padding: 0; }
-input[type=text], input[type=number], input[type=date], input[type=search], input:not([type]), select, textarea {
+input[type=text], input[type=number], input[type=date], input[type=time], input[type=search], input:not([type]), select, textarea {
   width: 100%; min-height: 44px; padding: 10px 14px; border-radius: 14px;
   border: 1px solid var(--border); background: var(--surface-2); color: var(--text); font-size: 16px;
 }
@@ -378,6 +417,7 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--primary); o
 .amount-field input { font-size: 24px; font-weight: 700; }
 
 .segmented { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; background: var(--surface-2); padding: 4px; border-radius: 999px; }
+.segmented.three { grid-template-columns: repeat(3, 1fr); }
 .segmented.four { grid-template-columns: repeat(4, 1fr); }
 .segmented label { cursor: pointer; }
 .segmented input { position: absolute; opacity: 0; pointer-events: none; }

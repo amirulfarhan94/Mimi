@@ -8,6 +8,13 @@ const empty = () => ({
   notes: [],   // { id, date, mood, title, body, createdAt, updatedAt }
   txns: [],    // { id, type: 'out'|'in', amount, category, date, note, link?: { kutuId, round, kind } }
   kutu: [],    // see js/kutu.js
+  todos: [],   // see js/todo.js
+  todoLists: [
+    { id: 'home', name: 'Home', emoji: '🏠' },
+    { id: 'shopping', name: 'Shopping', emoji: '🛒' },
+    { id: 'work', name: 'Work', emoji: '💼' },
+    { id: 'personal', name: 'Personal', emoji: '💕' },
+  ],
   settings: { name: '' },
 });
 

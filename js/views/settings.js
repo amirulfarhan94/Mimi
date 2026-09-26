@@ -23,7 +23,7 @@ export default {
 
       <section class="card">
         <h3 class="card-title">Backup</h3>
-        <p class="muted small">${s.notes.length} diary entries · ${s.txns.length} money records · ${s.kutu.length} kutu groups</p>
+        <p class="muted small">${s.notes.length} diary entries · ${s.todos.length} to-dos · ${s.txns.length} money records · ${s.kutu.length} kutu groups</p>
         <div class="row gap wrap">
           <button class="btn" data-export>${icon('download')} Export JSON</button>
           <label class="btn">${icon('upload')} Import JSON<input type="file" accept="application/json,.json" hidden data-import></label>
@@ -63,7 +63,7 @@ export default {
       }
     });
     root.querySelector('[data-reset]').addEventListener('click', async () => {
-      if (await confirmSheet('All diary entries, money records and kutu groups will be permanently deleted. Make sure you have exported a backup.', { ok: 'Delete everything' })) {
+      if (await confirmSheet('All diary entries, to-dos, money records and kutu groups will be permanently deleted. Make sure you have exported a backup.', { ok: 'Delete everything' })) {
         resetAll();
         toast('All data deleted');
       }

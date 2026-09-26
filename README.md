@@ -11,12 +11,13 @@ Every time the app opens, the dashboard greets her with:
 ## Features
 
 - **📔 Diary** — daily entries with a mood, search, and a writing streak.
+- **✅ To-do** — quick add, Today / Upcoming / All views, custom lists with emoji (🏠 Home, 🛒 Shopping, 💼 Work, 💕 Personal…), due date & time, ★ important, and **repeating tasks** (daily, weekly, monthly or every X days — ticking one creates the next).
 - **💸 Expenses** — expenses & income by category, month navigation, category breakdown and monthly balance.
 - **🤝 Duit kutu** — manage many groups at once: **weekly**, **every 10 days**, **monthly**, or any custom interval.
   - Set the turn order (or 🎲 shuffle), tick **Me** on your slot(s) — more than one is fine.
   - Automatic round schedule with dates & recipients, per-member payment ticks, overdue rounds flagged ⚠️.
   - Ticking your own payment adds a Kutu expense; receiving your pot adds Kutu income.
-- **🏠 Dashboard** — spent today / this month, balance, 7-day chart, upcoming kutu, your next payout, today's diary.
+- **🏠 Dashboard** — today's to-dos (tick them right there), spent today / this month, balance, 7-day chart, upcoming kutu, your next payout, today's diary.
 
 ## PWA
 
@@ -58,6 +59,7 @@ fonts/                  Quicksand + Dancing Script (SIL OFL)
 js/app.js               hash router, navigation, FAB, SW updates
 js/store.js             localStorage store + backup
 js/kutu.js              kutu logic: round schedule, status, payments
-js/views/*.js           Dashboard, Diary, Expenses, Kutu, Settings
+js/todo.js              to-do logic: sorting, repeating tasks, lists
+js/views/*.js           Dashboard, Diary, To-do, Expenses, Kutu, Settings
 icons/                  app icons generated from the Mimi logo (any + maskable + Apple)
 ```
