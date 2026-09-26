@@ -1,5 +1,6 @@
 // Mimi Love Letter 💌 — dashboard card + popup with today's note from Hubby.
 import { esc } from '../util.js';
+import { icon } from '../ui.js';
 import { noteFor } from '../loveLetter.js';
 
 /** Envelope with a heart seal, a peeking letter and a few sparkles (decorative). */
@@ -18,15 +19,18 @@ const envelope = (cls = '') => `
       d="M12 21s-7-4.35-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.65-9.5 9-9.5 9z"/>
   </svg>`;
 
-/** Dashboard card. On special dates it hints at the birthday / anniversary letter. */
+/** Strip inside the dashboard greeting card. On special dates it hints at the birthday / anniversary letter. */
 export function letterCard(date = new Date()) {
   const note = noteFor(date);
   const o = note.kind === 'special' ? note.occasion : null;
   return `
     <button class="letter-card ${o ? `special ${o.theme}` : ''}" data-love-letter aria-haspopup="dialog">
       ${envelope()}
-      <span class="letter-card-title">${o ? `${o.emoji} ${esc(o.cardTitle)}` : '💌 A Little Note for You'}</span>
-      <span class="letter-card-sub">${o ? esc(o.cardSubtitle) : 'Your daily love letter is waiting...'}</span>
+      <span class="letter-card-text">
+        <span class="letter-card-title">${o ? `${o.emoji} ${esc(o.cardTitle)}` : 'A Little Note for You'}</span>
+        <span class="letter-card-sub">${o ? esc(o.cardSubtitle) : 'Your daily love letter is waiting...'}</span>
+      </span>
+      <span class="letter-card-go" aria-hidden="true">${icon('right')}</span>
     </button>`;
 }
 

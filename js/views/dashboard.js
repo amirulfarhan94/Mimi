@@ -50,11 +50,9 @@ export default {
         <span class="love-hearts" aria-hidden="true">♥ ♡ ♥</span>
         <h1 class="script">Hi Sayang ❤️</h1>
         <p class="love-ask">What would you like to do today?</p>
-        <p class="love-sign">— Always here for you.</p>
         <p class="love-date">${fmtDateLong(now)}</p>
+        ${letterCard()}
       </section>
-
-      ${letterCard()}
 
       <div class="quick" aria-label="Quick add">
         <button class="quick-btn" data-q="txn"><span>💸</span>Expense</button>

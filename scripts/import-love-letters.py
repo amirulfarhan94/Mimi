@@ -26,17 +26,17 @@ MONTHS = {m: i for i, m in enumerate(
 OCCASIONS = {
     'Mimi Birthday': dict(id='mimi-birthday', emoji='🎂', theme='birthday',
                           title='Happy Birthday, Sayang ❤️',
-                          cardTitle='A Birthday Letter for You',
+                          cardTitle='A Birthday Letter',
                           cardSubtitle='Today is all about you… open it ✨'),
     # Keyed by the workbook's "Occasion" column.
     'Amirul Birthday': dict(id='hubby-birthday', label='Hubby Birthday', emoji='🎂', theme='birthday',
                             title="Someone's Birthday Today! ❤️",
-                            cardTitle="Someone's Birthday Today!",
+                            cardTitle="Someone's Birthday!",
                             cardSubtitle='There’s a little note about it… 🎈'),
     'Anniversary': dict(id='anniversary', emoji='💍', theme='anniversary',
                         title='Happy Anniversary, Sayang ❤️',
                         cardTitle='An Anniversary Letter',
-                        cardSubtitle='Something special is waiting for you… 💕'),
+                        cardSubtitle='Something special is waiting… 💕'),
 }
 
 js = lambda s: json.dumps(s, ensure_ascii=False)

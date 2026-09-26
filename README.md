@@ -6,7 +6,8 @@ Every time the app opens, the dashboard greets her with:
 
 > **Hi Sayang ❤️**
 > What would you like to do today?
-> — *Always here for you.*
+
+…with today's 💌 love letter from Hubby right below it.
 
 ## Features
 
