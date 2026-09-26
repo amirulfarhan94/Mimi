@@ -6,12 +6,14 @@ import { registerSW, onInstallChange } from './pwa.js';
 import dashboard from './views/dashboard.js';
 import diary from './views/diary.js';
 import expenses from './views/expenses.js';
+import todo from './views/todo.js';
 import kutu from './views/kutu.js';
 import settings from './views/settings.js';
 
 const routes = [
   { re: /^\/?$/, view: dashboard, tab: 'home' },
   { re: /^\/diary$/, view: diary, tab: 'diary' },
+  { re: /^\/todo$/, view: todo, tab: 'todo' },
   { re: /^\/expenses$/, view: expenses, tab: 'expenses' },
   { re: /^\/kutu$/, view: kutu, tab: 'kutu' },
   { re: /^\/kutu\/([\w-]+)$/, view: kutu, tab: 'kutu', params: (m) => ({ id: m[1] }) },

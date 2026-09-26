@@ -53,6 +53,16 @@
       ]
     },
     {
+      "name": "Add to-do",
+      "url": "./#/todo",
+      "icons": [
+        {
+          "src": "icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
       "name": "Write diary",
       "url": "./#/diary",
       "icons": [

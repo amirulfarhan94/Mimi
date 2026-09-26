@@ -5,6 +5,8 @@ import { icon } from '../ui.js';
 import { txnsInMonth, totals, byCategory, categoryBars, openTxnForm, txnRow, bindTxnRows } from './expenses.js';
 import { openNoteForm, noteCard, bindNoteCards, streak } from './diary.js';
 import { openGroupForm } from './kutu.js';
+import { openTodoForm, todoRow, bindTodoRows } from './todo.js';
+import { sortTodos, isDueToday } from '../todo.js';
 import { upcomingEvents, myUpcomingPayouts, pot } from '../kutu.js';
 
 /** Vertical bars of the last 7 days of spending (one series; values in tooltip & today's label). */
@@ -39,6 +41,7 @@ export default {
     const todayNote = s.notes.find((n) => n.date === now);
     const events = upcomingEvents(s.kutu, now, 5);
     const payout = myUpcomingPayouts(s.kutu, now)[0];
+    const dueTodos = sortTodos(s.todos.filter((t) => isDueToday(t, now)));
     const recent = [...s.txns].sort((a, b) => b.date.localeCompare(a.date) || (b.createdAt || '').localeCompare(a.createdAt || '')).slice(0, 4);
 
     return `
@@ -50,11 +53,20 @@ export default {
         <p class="love-date">${fmtDateLong(now)}</p>
       </section>
 
-      <div class="quick">
-        <button class="quick-btn" data-q="txn"><span>💸</span>Add expense</button>
-        <button class="quick-btn" data-q="note"><span>📝</span>Write diary</button>
-        <button class="quick-btn" data-q="kutu"><span>🤝</span>New kutu</button>
+      <div class="quick" aria-label="Quick add">
+        <button class="quick-btn" data-q="txn"><span>💸</span>Expense</button>
+        <button class="quick-btn" data-q="todo"><span>✅</span>To-do</button>
+        <button class="quick-btn" data-q="note"><span>📝</span>Diary</button>
+        <button class="quick-btn" data-q="kutu"><span>🤝</span>Kutu</button>
       </div>
+
+      <section class="card">
+        <div class="row between"><h3 class="card-title">${icon('checklist')} Today's to-do</h3><a class="link" href="#/todo">See all</a></div>
+        ${dueTodos.length
+          ? `<div class="todos">${dueTodos.slice(0, 5).map(todoRow).join('')}</div>
+             ${dueTodos.length > 5 ? `<a class="link small" href="#/todo">+${dueTodos.length - 5} more</a>` : ''}`
+          : `<button class="prompt" data-q="todo"><span>🌸</span><span class="grow"><b>Nothing due today</b><br><span class="small muted">Tap to add something to your list.</span></span>${icon('right')}</button>`}
+      </section>
 
       <section class="stats three">
         <div class="stat"><span class="stat-label">Spent today</span><span class="stat-val">${rmStat(todayOut)}</span></div>
@@ -104,9 +116,10 @@ export default {
   },
   mount(root) {
     root.querySelectorAll('[data-q]').forEach((b) => b.addEventListener('click', () => {
-      ({ txn: () => openTxnForm(), note: () => openNoteForm(), kutu: () => openGroupForm() })[b.dataset.q]();
+      ({ txn: () => openTxnForm(), todo: () => openTodoForm(null, { due: today() }), note: () => openNoteForm(), kutu: () => openGroupForm() })[b.dataset.q]();
     }));
     bindTxnRows(root);
     bindNoteCards(root);
+    bindTodoRows(root);
   },
 };

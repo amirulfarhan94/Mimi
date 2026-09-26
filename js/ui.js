@@ -78,6 +78,7 @@ const ICONS = {
   upload: '<path d="M12 20V9M7 14l5-5 5 5M5 4h14"/>',
   arrowDown: '<path d="M12 5v14M6 13l6 6 6-6"/>',
   arrowUp: '<path d="M12 19V5M6 11l6-6 6 6"/>',
+  checklist: '<rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 9l1.5 1.5L12 8M8 15l1.5 1.5L12 14M14.5 9.5H17M14.5 15.5H17"/>',
   pen: '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
 };
 
