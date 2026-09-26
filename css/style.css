@@ -1,4 +1,4 @@
-/* Mimi — mobile-first, soft pink theme with dark mode. */
+/* Mimi — mobile-first, always-dark theme with soft pink accents. */
 
 /* Bundled fonts (SIL OFL, see fonts/LICENSE.md) — available offline from the first install. */
 @font-face {
@@ -10,80 +10,45 @@
   src: url(../fonts/dancing-script-latin.woff2) format("woff2");
 }
 :root {
-  --bg: #fff6f8;
-  --surface: #ffffff;
-  --surface-2: #fdeef2;
-  --border: #f5dbe3;
-  --text: #3a1f2b;
-  --text-2: #6e4a58;
-  --muted: #94707f;
-  --primary: #c92f62;
-  --primary-ink: #ffffff;
-  --primary-soft: #fde4ec;
-  --accent: #e0517f;
-  --bar: #e0517f;
-  --bar-soft: #f7c3d3;
-  --in: #1e7f55;
-  --out: #c42b50;
-  --warn: #9a5500;
-  --warn-soft: #fff0d9;
-  --ok-soft: #e2f5eb;
-  --danger: #c42b50;
-  --hero-1: #fde2ea;
-  --hero-2: #fbd0dc;
-  --hero-3: #f7b3c7;
-  --letter-1: #fffaf3;
-  --letter-2: #fde6ee;
-  --letter-border: #f6d6df;
-  --paper: #fffdf8;
-  --env-back: #f7c3d3;
-  --env-front: #fbd6e1;
-  --env-line: #e8a6ba;
-  --sparkle: #e9b44c;
+  --bg: #1c1117;
+  --surface: #27161e;
+  --surface-2: #331e28;
+  --border: #452c38;
+  --text: #f9eaf0;
+  --text-2: #dcbfcb;
+  --muted: #b095a2;
+  --primary: #f58fb2;
+  --primary-ink: #3a0d1f;
+  --primary-soft: #47202f;
+  --accent: #f58fb2;
+  --bar: #f58fb2;
+  --bar-soft: #5b2a3f;
+  --in: #6fdca5;
+  --out: #ff8fa6;
+  --warn: #f7c166;
+  --warn-soft: #3d2a10;
+  --ok-soft: #173327;
+  --danger: #ff8fa6;
+  --hero-1: #3a1a28;
+  --hero-2: #4a2032;
+  --hero-3: #5e2840;
+  --letter-1: #2e1b24;
+  --letter-2: #3d2030;
+  --letter-border: #553142;
+  --paper: #2a1a22;
+  --env-back: #8c3f5f;
+  --env-front: #a8547a;
+  --env-line: #c9799b;
+  --sparkle: #f1c878;
   --radius: 20px;
   --radius-sm: 12px;
-  --shadow: 0 1px 2px rgb(201 47 98 / .05), 0 6px 20px rgb(201 47 98 / .07);
+  --shadow: none;
   --tabbar-h: 64px;
   --safe-b: env(safe-area-inset-bottom, 0px);
   --safe-t: env(safe-area-inset-top, 0px);
   --font: "Quicksand", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-script: "Dancing Script", "Brush Script MT", cursive;
-  color-scheme: light dark;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1c1117;
-    --surface: #27161e;
-    --surface-2: #331e28;
-    --border: #452c38;
-    --text: #f9eaf0;
-    --text-2: #dcbfcb;
-    --muted: #b095a2;
-    --primary: #f58fb2;
-    --primary-ink: #3a0d1f;
-    --primary-soft: #47202f;
-    --accent: #f58fb2;
-    --bar: #f58fb2;
-    --bar-soft: #5b2a3f;
-    --in: #6fdca5;
-    --out: #ff8fa6;
-    --warn: #f7c166;
-    --warn-soft: #3d2a10;
-    --ok-soft: #173327;
-    --danger: #ff8fa6;
-    --hero-1: #3a1a28;
-    --hero-2: #4a2032;
-    --hero-3: #5e2840;
-    --letter-1: #2e1b24;
-    --letter-2: #3d2030;
-    --letter-border: #553142;
-    --paper: #2a1a22;
-    --env-back: #8c3f5f;
-    --env-front: #a8547a;
-    --env-line: #c9799b;
-    --sparkle: #f1c878;
-    --shadow: none;
-  }
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -182,7 +147,7 @@ p { margin: 0; }
 }
 .btn.sm { min-height: 34px; padding: 0 10px; font-size: 13.5px; }
 .btn.primary { background: linear-gradient(135deg, var(--accent), var(--primary)); color: var(--primary-ink); border-color: transparent; box-shadow: 0 4px 14px rgb(201 47 98 / .25); }
-.btn.danger { background: var(--danger); color: #fff; border-color: transparent; }
+.btn.danger { background: var(--danger); color: var(--primary-ink); border-color: transparent; }
 .btn.ghost { background: transparent; }
 .btn.danger-text { color: var(--danger); }
 .btn.block { width: 100%; }
@@ -352,8 +317,8 @@ p { margin: 0; }
 .letter-card-title { font-family: var(--font-script); font-size: 21px; font-weight: 700; color: var(--primary); line-height: 1.15; text-wrap: balance; }
 .letter-card-sub { font-size: 12.5px; color: var(--text-2); font-weight: 600; line-height: 1.35; text-wrap: balance; }
 .letter-card-go { flex: none; color: var(--primary); display: grid; place-items: center; }
-.letter-card.birthday { --letter-1: #fdebd3; --letter-border: #f0cf9f; }
-.letter-card.anniversary { --letter-border: var(--accent); }
+.letter-card.birthday { --letter-1: #3a2618; --letter-2: #3d2030; --letter-border: #6a4a2c; }
+.letter-card.anniversary { --letter-1: #4a1f33; --letter-2: #4a1f33; --letter-border: var(--accent); }
 
 .envelope { width: 96px; height: auto; overflow: visible; animation: env-float 4.5s ease-in-out infinite; }
 .envelope.small { width: 72px; animation: none; }
@@ -406,13 +371,9 @@ p { margin: 0; }
 .letter-actions .btn { min-height: 48px; font-size: 15.5px; }
 
 /* Special dates: warmer birthday paper, rosier anniversary paper, confetti / hearts that float once. */
-.letter-paper.birthday { --letter-1: #fdebd3; border-color: #f0cf9f; }
-.letter-paper.anniversary { --letter-1: #fbd0dc; }
+.letter-paper.birthday { --letter-1: #3a2618; border-color: #6a4a2c; }
+.letter-paper.anniversary { --letter-1: #4a1f33; }
 .letter-paper.special .letter-title { font-size: 34px; }
-@media (prefers-color-scheme: dark) {
-  .letter-card.birthday, .letter-paper.birthday { --letter-1: #3a2618; --letter-2: #3d2030; border-color: #6a4a2c; }
-  .letter-card.anniversary, .letter-paper.anniversary { --letter-1: #4a1f33; --letter-2: #4a1f33; }
-}
 .letter-float { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
 .letter-float span { position: absolute; top: -24px; font-size: 13px; opacity: 0; animation: fall 3s ease-in forwards; }
 .letter-float.birthday span:nth-child(3n) { color: var(--sparkle); }
