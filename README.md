@@ -12,6 +12,7 @@ Every time the app opens, the dashboard greets her with:
 ## Features
 
 - **💌 Mimi Love Letter** — a daily note from Hubby on the dashboard. Tap the card to read today's one letter — it changes by itself every day — with special letters on **2 April** (Mimi's birthday 🎂), **10 October** (Hubby's birthday 🎂) and **30 November** (anniversary 💍).
+- **🔔 Reminders** — push notifications at 8:00 am for today's to-dos, kutu payments and your kutu turn, plus timed to-dos at their time (needs the small free server in [`push-worker/`](push-worker/README.md)).
 - **📔 Diary** — daily entries with a mood, search, and a writing streak.
 - **✅ To-do** — quick add, Today / Upcoming / All views, custom lists with emoji (🏠 Home, 🛒 Shopping, 💼 Work, 💕 Personal…), due date & time, ★ important, and **repeating tasks** (daily, weekly, monthly or every X days — ticking one creates the next).
 - **💸 Expenses** — expenses & income by category, month navigation, category breakdown and monthly balance.

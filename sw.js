@@ -1,6 +1,9 @@
 // Service worker: caches the app shell for offline use.
 // Bump VERSION whenever app files change so users receive the new version.
-const VERSION = 'mimi-v6';
+importScripts('./push-config.js');
+
+const VERSION = 'mimi-v7';
+const PUSH_CACHE = 'mimi-push'; // device token for reminders — kept across versions
 const ASSETS = [
   './',
   './index.html',
@@ -24,6 +27,9 @@ const ASSETS = [
   './js/data/loveLetters.js',
   './js/data/specialLetters.js',
   './js/data/letterOverrides.js',
+  './js/reminders.js',
+  './push-config.js',
+  './icons/badge-96.png',
   './fonts/quicksand-latin.woff2',
   './fonts/dancing-script-latin.woff2',
   './icons/favicon-48.png',
@@ -46,7 +52,7 @@ self.addEventListener('install', (e) => {
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== VERSION).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k !== VERSION && k !== PUSH_CACHE).map((k) => caches.delete(k))))
       .then(() => self.clients.claim()),
   );
 });
@@ -76,4 +82,34 @@ self.addEventListener('fetch', (e) => {
         .catch(() => (req.mode === 'navigate' ? caches.match('./index.html') : Response.error()));
     }),
   );
+});
+
+// ---------- Reminders (Web Push) ----------
+// The push itself is empty; fetch this device's due reminders from the reminder server and show them.
+async function showPending() {
+  const url = (self.MIMI_PUSH && self.MIMI_PUSH.workerUrl || '').replace(/\/$/, '');
+  let items = [];
+  try {
+    const saved = await (await caches.open(PUSH_CACHE)).match('./push-token');
+    const { token } = await saved.json();
+    const res = await fetch(`${url}/pending`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token }) });
+    items = (await res.json()).notifications || [];
+  } catch {
+    items = [{ title: 'Mimi', body: 'You have a reminder 💕', url: './#/', tag: 'mimi-reminder' }];
+  }
+  await Promise.all(items.map((n) => self.registration.showNotification(n.title, {
+    body: n.body, tag: n.tag || n.id, icon: 'icons/icon-192.png', badge: 'icons/badge-96.png', data: { url: n.url || './#/' },
+  })));
+}
+
+self.addEventListener('push', (e) => e.waitUntil(showPending()));
+
+self.addEventListener('notificationclick', (e) => {
+  e.notification.close();
+  const target = new URL(e.notification.data && e.notification.data.url || './', self.registration.scope).href;
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(async (wins) => {
+    const win = wins[0];
+    if (win) { await win.focus(); return win.navigate(target).catch(() => {}); }
+    return self.clients.openWindow(target);
+  }));
 });
