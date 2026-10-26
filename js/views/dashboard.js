@@ -49,7 +49,7 @@ export default {
     return `
       <section class="love-card">
         <span class="love-hearts" aria-hidden="true">♥ ♡ ♥</span>
-        <h1 class="script">Hi Sayang ❤️</h1>
+        <h1 class="script"><span class="grad-text">Hi Sayang</span> ❤️</h1>
         <p class="love-ask">What would you like to do today?</p>
         <p class="love-date">${fmtDateLong(now)}</p>
         ${letterCard()}
