@@ -27,7 +27,7 @@ Every time the app opens, the dashboard greets her with:
 
 - Installable (Android/Chrome: *Install app*; iPhone/Safari: *Share → Add to Home Screen*).
 - Works **offline** — the app shell, icons and fonts are all cached by the service worker.
-- Soft pink theme with automatic dark mode, mobile-first, app shortcuts.
+- "Lilac Glass" look: frosted glass cards over soft lilac & pink light, always dark; mobile-first, app shortcuts.
 
 ## Love letters
 
@@ -70,7 +70,7 @@ All paths are relative, so it also works from a sub-folder (e.g. `username.githu
 index.html              app shell
 manifest.webmanifest    PWA manifest
 sw.js                   service worker (offline cache)
-css/style.css           styles (light & dark)
+css/style.css           styles (Lilac Glass theme, always dark)
 fonts/                  Quicksand + Dancing Script (SIL OFL)
 js/app.js               hash router, navigation, FAB, SW updates
 js/store.js             localStorage store + backup
